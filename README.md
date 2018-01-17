@@ -30,9 +30,9 @@ Managed via game state vars? (thinking Java enums here)<br/>
 ###### Credits
 
 #### Options
-*Brightness*<br/>
-*Sounds*<br/>
-*Music*<br/>
-*Clear game data*<br/>
+Brightness<br/>
+Sounds<br/>
+Music<br/>
+Clear game data<br/>
 
 By [Adam Mehdi](https://github.com/AdamMedee "Adam's GH") and [Syed Safwaan](https://github.com/syed-safwaan "Syed's GH")<br/>
