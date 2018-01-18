@@ -11,21 +11,21 @@ Asteroid remix (the arcade game). Basically the game with cool stuff and gud gra
 ## Notes
 pls remove after done<br/>
 ### Classes
-Asteroid Class
--Size
--Vel/pos<br/>
+#### Asteroid Class
+Size<br/>
+Vel/pos<br/>
 #### Ship Class
--Vel/Pos
--Ammo<br/>
+Vel/Pos<br/>
+Ammo<br/>
 #### Bullet Class
--Vel/Pos
--Damage<br/>
+Vel/Pos<br/>
+Damage<br/>
 #### Button (built-in)
 custom button images?<br/>
 #### Power-Ups
--Pos
--PowerUp Type
--LifeLine
+Pos<br/>
+PowerUp Type<br/>
+LifeLine<br/>
 i liek<br/>
 #### Wall
 k this is sounding like spacey circles 2.0<br/>
