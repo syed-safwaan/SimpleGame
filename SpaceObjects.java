@@ -1,3 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
 class SpaceObjects {
 
 }
@@ -29,3 +33,5 @@ class Wall {
 
     }
 }
+
+
