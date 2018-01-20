@@ -5,6 +5,7 @@ import javax.swing.*;
 public class Asteroids extends JFrame implements ActionListener,KeyListener{
     Timer myTimer;
     GamePanel game;
+    static Asteroids frame;
     final int WIDTH = 1280;
     final int HEIGHT = 720;
 
@@ -21,13 +22,8 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
         addKeyListener(this);
         setResizable(false);
         setVisible(true);
-    }
 
-    public void actionPerformed(ActionEvent evt){
-        if(game != null){
-            game.refresh();
-            game.repaint();
-        }
+
     }
 
     public void keyTyped(KeyEvent e) {}
@@ -40,8 +36,16 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
         game.setKey(e.getKeyCode(),false);
     }
 
+    public void actionPerformed(ActionEvent evt){
+        if(game != null){
+            game.refresh();
+            game.repaint();
+        }
+    }
+
+
     public static void main(String[] arguments) {
-        new Asteroids();
+        frame = new Asteroids();
     }
 }
 
@@ -64,7 +68,7 @@ class GamePanel extends JPanel {
 
     }
 
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics screen){
 
     }
 }
