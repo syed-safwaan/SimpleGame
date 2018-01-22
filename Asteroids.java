@@ -53,7 +53,6 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
 class GamePanel extends JPanel {
     private boolean []keys;
-    private Image back;
 
     public GamePanel(){
         keys = new boolean[KeyEvent.KEY_LAST+1];
