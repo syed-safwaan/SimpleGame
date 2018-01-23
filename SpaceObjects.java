@@ -30,12 +30,15 @@ class Ship {
     private int shipID;  // distinct int value given to each ship to identify, equal to player number
 
 
-    public Ship(double xPos, double yPos, double acceleration) {
-        this.shipID = shipCount ++;
+    public Ship(double xPos, double yPos, double acceleration, double velMax, double turningStrength) {
+        this.shipID = this.shipCount ++;
         this.xPos = xPos;
         this.yPos = yPos;
         this.acceleration = acceleration;
+        this.velMax = velMax;
+        this.turningStrength = turningStrength;
     }
+
 
     /* Gets user input and changes velocities of the ship accordingly/change direction */
 
@@ -43,20 +46,38 @@ class Ship {
         if(keys[movementKeys[this.shipID][0]]){
             this.xVel += this.acceleration*Math.cos(this.angle);
             this.yVel += this.acceleration*Math.sin(this.angle);
+
+            // Restricts velocities
+            this.xVel = Math.max(Math.min(this.xVel, this.velMax), -this.velMax);
+            this.yVel = Math.max(Math.min(this.xVel, this.velMax), -this.velMax);
+
         }
         if(keys[movementKeys[this.shipID][1]]){
-            this.angle += this.turningStrength;
-        }
-        if(keys[movementKeys[this.shipID][3]]){
             this.angle -= this.turningStrength;
         }
+        if(keys[movementKeys[this.shipID][3]]){
+            this.angle += this.turningStrength;
+        }
     }
+
+
+    /* Displays the ship to the screen */
+
+    public void update(Graphics screen){
+
+    }
+
+
+    /* Class for shots fired by the ship */
 
     private class Bullet {
         public Bullet() {
 
         }
     }
+
+
+    /* Class for powerups the ship could have */
 
     private class PowerUp {
 

@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+enum GameStates {MAIN, HELP, CREDITS, STARTGAME};
+
 public class Asteroids extends JFrame implements ActionListener,KeyListener{
     Timer myTimer;
     GamePanel game;
@@ -24,6 +26,8 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
         setVisible(true);
 
 
+
+
     }
 
     public void keyTyped(KeyEvent e) {}
@@ -44,6 +48,8 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
     }
 
 
+    /* Main method where the program starts */
+
     public static void main(String[] arguments) {
         frame = new Asteroids();
     }
@@ -53,10 +59,13 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
 class GamePanel extends JPanel {
     private boolean []keys;
+    GameStates currentGameState = GameStates.MAIN;
 
     public GamePanel(){
         keys = new boolean[KeyEvent.KEY_LAST+1];
         setSize(WIDTH, HEIGHT);
+
+
     }
 
     public void setKey(int k, boolean v) {
@@ -68,6 +77,16 @@ class GamePanel extends JPanel {
     }
 
     public void paintComponent(Graphics screen){
+        switch(currentGameState){
+            case MAIN:
+
+
+            default:
+                break;
+        }
+
+
+
 
     }
 }
