@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 enum GameStates {MAIN, HELP, CREDITS, STARTGAME};
@@ -24,10 +25,6 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
         addKeyListener(this);
         setResizable(false);
         setVisible(true);
-
-
-
-
     }
 
     public void keyTyped(KeyEvent e) {}
@@ -58,14 +55,15 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
 
 class GamePanel extends JPanel {
-    private boolean []keys;
+    private boolean[] keys;
     GameStates currentGameState = GameStates.MAIN;
+    ArrayList allShips = new ArrayList<Ship>();
+    ArrayList allAsteroids = new ArrayList<Asteroid>();
+
 
     public GamePanel(){
         keys = new boolean[KeyEvent.KEY_LAST+1];
         setSize(WIDTH, HEIGHT);
-
-
     }
 
     public void setKey(int k, boolean v) {
@@ -80,6 +78,9 @@ class GamePanel extends JPanel {
         switch(currentGameState){
             case MAIN:
 
+            case HELP:
+
+            case CREDITS:
 
             default:
                 break;

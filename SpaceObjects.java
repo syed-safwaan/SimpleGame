@@ -6,11 +6,23 @@ class SpaceObjects {
 
 }
 
+
+/* Asteroids that can be shot and destroy the ship */
+
 class Asteroid {
+    private static int asteroidCount = 0;
+    private double xPos, yPos;
+    private double xVel, yVel;
+    private int asteroidSize;
+    private double naturalRotation;  // aesthetic rotation for game to look more dynamic
+
     public Asteroid() {
 
     }
 }
+
+
+/* Ship(s) user(s) control(s) to shoot bullets at asteroids */
 
 class Ship {
     private static int shipCount = 0;  // number of ships existing on the screen
@@ -28,15 +40,19 @@ class Ship {
     private double acceleration;  // strength of thrusters when ship is moved
     private double turningStrength;
     private int shipID;  // distinct int value given to each ship to identify, equal to player number
+    private int ammo;
+    private boolean accelerating = false;
+    private double drag;  // How much the ship slows down by if not accelerating
 
 
-    public Ship(double xPos, double yPos, double acceleration, double velMax, double turningStrength) {
+    public Ship(double xPos, double yPos, double acceleration, double drag, double turningStrength, int ammo) {
         this.shipID = this.shipCount ++;
         this.xPos = xPos;
         this.yPos = yPos;
         this.acceleration = acceleration;
-        this.velMax = velMax;
+        this.drag = drag;
         this.turningStrength = turningStrength;
+        this.ammo = ammo;
     }
 
 
@@ -46,24 +62,29 @@ class Ship {
         if(keys[movementKeys[this.shipID][0]]){
             this.xVel += this.acceleration*Math.cos(this.angle);
             this.yVel += this.acceleration*Math.sin(this.angle);
-
-            // Restricts velocities
-            this.xVel = Math.max(Math.min(this.xVel, this.velMax), -this.velMax);
-            this.yVel = Math.max(Math.min(this.xVel, this.velMax), -this.velMax);
-
         }
+
         if(keys[movementKeys[this.shipID][1]]){
             this.angle -= this.turningStrength;
         }
         if(keys[movementKeys[this.shipID][3]]){
             this.angle += this.turningStrength;
         }
+        this.xVel *= this.drag;
+        this.yVel *= this.drag;
     }
 
 
     /* Displays the ship to the screen */
 
     public void update(Graphics screen){
+
+    }
+
+
+    /* If possible, will shoot bullet in direction ship is pointed with certain attributes depending on the ship upgrades/powerups */
+
+    public void shoot(boolean[] keys){
 
     }
 
@@ -80,9 +101,14 @@ class Ship {
     /* Class for powerups the ship could have */
 
     private class PowerUp {
+        public PowerUp() {
 
+        }
     }
 }
+
+
+/* Area the ship, asteroids, and bullets cannot pass through */
 
 class Wall {
 
@@ -93,6 +119,13 @@ class Wall {
         /* Constructs a Wall. */
 
     }
+}
+
+
+/* Space that the game takes place in */
+
+class Space {
+
 }
 
 
