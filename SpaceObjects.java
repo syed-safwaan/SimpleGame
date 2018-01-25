@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 class SpaceObjects {
 
@@ -11,12 +12,16 @@ class SpaceObjects {
 
 class Asteroid {
     private static int asteroidCount = 0;
-    private double xPos, yPos;
+    private double xPos, yPos;  // center of mass of the asteroid
     private double xVel, yVel;
     private int asteroidSize;
-    private double naturalRotation;  // aesthetic rotation for game to look more dynamic
+    private double rotation;  // aesthetic rotation for game to look more dynamic
 
     public Asteroid() {
+
+    }
+
+    public void update(Graphics screen){
 
     }
 }
@@ -46,7 +51,7 @@ class Ship {
 
 
     public Ship(double xPos, double yPos, double acceleration, double drag, double turningStrength, int ammo) {
-        this.shipID = this.shipCount ++;
+        this.shipID = shipCount ++;
         this.xPos = xPos;
         this.yPos = yPos;
         this.acceleration = acceleration;
@@ -105,19 +110,12 @@ class Ship {
 
         }
     }
-}
 
 
-/* Area the ship, asteroids, and bullets cannot pass through */
+    /* Getters for the ship class */
 
-class Wall {
-
-    /* Used to make Wall objects. */
-
-    public Wall() {
-
-        /* Constructs a Wall. */
-
+    public static int getShipCount(){
+        return shipCount;
     }
 }
 
@@ -125,6 +123,65 @@ class Wall {
 /* Space that the game takes place in */
 
 class Space {
+    ArrayList<Ship> allShips = new ArrayList<Ship>();
+    ArrayList<Asteroid> allAsteroids = new ArrayList<Asteroid>();
+
+
+    /* Used to makeSpace objects. */
+
+    public Space() {
+
+    }
+
+
+    /* Adds asteroid to space object */
+
+    public void addAsteroid(){
+
+    }
+
+
+    /* Adds ship to space object */
+
+    public void addShip(){
+
+    }
+
+
+    /* Does all interactions of objects in the space */
+
+    public void updateSpace(boolean[] keys){
+        for(Ship ship: allShips){
+            ship.accelerate(keys);
+            ship.shoot(keys);
+        }
+    }
+
+
+    /* Displays the space to the screen */
+
+    public void update(Graphics screen){
+        for(Ship ship : allShips){
+            ship.update(screen);
+        }
+        for(Asteroid asteroid : allAsteroids){
+            asteroid.update(screen);
+        }
+    }
+
+
+    /* Area the ship, asteroids, and bullets cannot pass through */
+
+    private class Wall {
+
+    /* Used to make Wall objects. */
+
+        public Wall() {
+
+        /* Constructs a Wall. */
+
+        }
+    }
 
 }
 

@@ -29,6 +29,9 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
     public void keyTyped(KeyEvent e) {}
 
+
+    /* Updates which keys are currently pressed by the user */
+
     public void keyPressed(KeyEvent e) {
         game.setKey(e.getKeyCode(),true);
     }
@@ -57,8 +60,7 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 class GamePanel extends JPanel {
     private boolean[] keys;
     GameStates currentGameState = GameStates.MAIN;
-    ArrayList allShips = new ArrayList<Ship>();
-    ArrayList allAsteroids = new ArrayList<Asteroid>();
+
 
 
     public GamePanel(){
@@ -71,7 +73,16 @@ class GamePanel extends JPanel {
     }
 
     public void refresh(){
+        switch(currentGameState){
+            case MAIN:
 
+            case HELP:
+
+            case CREDITS:
+
+            default:
+                break;
+        }
     }
 
     public void paintComponent(Graphics screen){
@@ -85,9 +96,6 @@ class GamePanel extends JPanel {
             default:
                 break;
         }
-
-
-
 
     }
 }
