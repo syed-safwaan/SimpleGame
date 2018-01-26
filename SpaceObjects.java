@@ -1,188 +1,218 @@
-import javax.swing.*;
+/*
+    Adam Mehdi & Syed Safwaan
+    SpaceObjects.java
+    A collection of methods for objects in use during the actual gameplay components of the program.
+
+    Classes:
+    - SpaceObjects  To manage the other objects (maybe)
+    - Asteroid      The "enemies" of the game
+    - Ship          The playable objects
+    - Bullet        The Ship's main weapon
+    - PowerUp       For augmenting the Ship's abilities
+    - Space         The playground of the other objects
+    - Space.Wall    A Space component that involves barriers and interesting physics
+*/
+
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.awt.event.*;
+import java.util.*;
 
 class SpaceObjects {
 
 }
 
-
-/* Asteroids that can be shot and destroy the ship */
-
 class Asteroid {
-    private static int asteroidCount = 0;
-    private double xPos, yPos;  // center of mass of the asteroid
-    private double xVel, yVel;
-    private int asteroidSize;
-    private double rotation;  // aesthetic rotation for game to look more dynamic
 
-    public Asteroid() {
+    /* Template for Asteroid objects, the main antagonistic entities in the game. */
 
+    // Fields //
+
+    private static int count = 0;  // to count active asteroids
+    private double x, y, xVel, yVel, rotation;  // asteroid state of motion
+    private int size;
+    private Polygon body;  // graphical and structural representation
+    private Image[] imgs;
+
+    // Constructor //
+
+    public Asteroid(int size, double x, double y, double rotation) {
+
+        /* Constructs and returns a new Asteroid object. */
+
+        this.size = size;
+        this.x = x; this.y = y;
+        this.xVel = this.yVel = 0;
+        this.rotation = rotation;
+
+        // make shape somehow
+        // add images
     }
 
-    public void update(Graphics screen){
+    public void update(Graphics comp) {
 
+        /* Draws the Asteroid onto a given Graphics component. */
+
+        // draw this asteroid using some dank shape construct alg
     }
 }
-
-
-/* Ship(s) user(s) control(s) to shoot bullets at asteroids */
 
 class Ship {
-    private static int shipCount = 0;  // number of ships existing on the screen
-    private static int maxShipCount = 4;  // max number of players allowed by the program
-    // keys used to accelerate up/left/down/right for each player
-    private static int movementKeys[][] = {
-            {KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT},
-            {KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_A,}
+
+    /* Used to make Ships, the PC bodies that can do stuff. */
+
+    // Fields //
+
+    private static int count = 0;  // to count active Ships
+//    private static int maxCount = 4;  // max active Ships
+
+    // Controls
+    private static int controls[][] = {
+        { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT },
+        { KeyEvent.VK_W,  KeyEvent.VK_D,     KeyEvent.VK_S,    KeyEvent.VK_A }
     };
-    //private static Image[] shipPics = {Insert ship images};
-    private double xPos, yPos;  // top left of the ship
-    private double xVel = 0, yVel = 0;  // change in position per frame for ship
-    private double angle = 0;  // direction ship is pointing in
-    private double velMax;
-    private double acceleration;  // strength of thrusters when ship is moved
-    private double turningStrength;
-    private int shipID;  // distinct int value given to each ship to identify, equal to player number
-    private int ammo;
-    private boolean accelerating = false;
-    private double drag;  // How much the ship slows down by if not accelerating
 
+    // Name vars for direction
+    private static int FORWARD = 0, RIGHT = 1, LEFT = 2, BACK = 3;
 
-    public Ship(double xPos, double yPos, double acceleration, double drag, double turningStrength, int ammo) {
-        this.shipID = shipCount ++;
-        this.xPos = xPos;
-        this.yPos = yPos;
-        this.acceleration = acceleration;
+    private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
+    private int ID, ammo;  // ID used for identification
+    private boolean isAccelerating;
+    private Polygon body;
+    private Image[] imgs;
+
+    public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
+
+        /* Constructs and returns a new Ship object. */
+
+        this.ID = count ++;
+
+        this.x = x; this.y = y;
+        this.accel = accel;
         this.drag = drag;
-        this.turningStrength = turningStrength;
+        this.turnSpeed = turnSpeed;
         this.ammo = ammo;
+
+        // make shape
+        // add images
     }
 
+    public static int getCount() {
+        return count;
+    }
 
-    /* Gets user input and changes velocities of the ship accordingly/change direction */
+    public void accelerate(boolean[] keys) {
 
-    public void accelerate(boolean[] keys){
-        if(keys[movementKeys[this.shipID][0]]){
-            this.xVel += this.acceleration*Math.cos(this.angle);
-            this.yVel += this.acceleration*Math.sin(this.angle);
+        /* Moves the Ship considering the currently pressed keys. */
+
+        if (keys[controls[this.ID][FORWARD]]) {  // moving forward
+            this.vx += this.accel * Math.cos(this.angle);
+            this.vy += this.accel * Math.sin(this.angle);
+        } if (keys[controls[this.ID][RIGHT]]) {  // turning right
+            this.angle -= this.turnSpeed;
+        } if (keys[controls[this.ID][LEFT]]) {  // turning left
+            this.angle += this.turnSpeed;
         }
 
-        if(keys[movementKeys[this.shipID][1]]){
-            this.angle -= this.turningStrength;
-        }
-        if(keys[movementKeys[this.shipID][3]]){
-            this.angle += this.turningStrength;
-        }
-        this.xVel *= this.drag;
-        this.yVel *= this.drag;
+        this.vx *= this.drag;
+        this.vy *= this.drag;
     }
 
-
-    /* Displays the ship to the screen */
-
-    public void update(Graphics screen){
-
+    public void move() {
+        // must factor in wall and boundary collisions
     }
 
+    public void fire() {
 
-    /* If possible, will shoot bullet in direction ship is pointed with certain attributes depending on the ship upgrades/powerups */
+        /* TBD */
 
-    public void shoot(boolean[] keys){
-
+        // will be called on mouseclick
     }
 
+    public void update(Graphics comp) {
 
-    /* Class for shots fired by the ship */
+        /* Draws the Ship onto a given Graphics component. */
 
+        // magic happens here
+    }
     private class Bullet {
-        public Bullet() {
 
+
+        /* Template for Bullet objects, the primary offensive projectile of the game. */
+
+        // Fields //
+
+        private double x, y, angle, speed;
+
+        // Constructor //
+
+        private Bullet(double x, double y, double angle, double speed) {
+
+            /* Constructs and returns a new Bullet object. */
+
+            this.x = x; this.y = y;
+            this.angle = angle;
+            this.speed = speed;
+        }
+
+        public void move() {
+
+            /* Moves the Bullet. */
+
+            this.x += this.speed * Math.cos(this.angle);
+            this.y += this.speed * Math.sin(this.angle);
         }
     }
 
-
-    /* Class for powerups the ship could have */
 
     private class PowerUp {
-        public PowerUp() {
+        private PowerUp() {
 
         }
+
     }
 
-
-    /* Getters for the ship class */
-
-    public static int getShipCount(){
-        return shipCount;
-    }
 }
 
 
-/* Space that the game takes place in */
-
 class Space {
-    ArrayList<Ship> allShips = new ArrayList<Ship>();
-    ArrayList<Asteroid> allAsteroids = new ArrayList<Asteroid>();
 
+    /* Used for managing the rest of the active game objects. */
 
-    /* Used to makeSpace objects. */
+    private ArrayList<Ship> ships = new ArrayList<>();
+    private ArrayList<Asteroid> asteroids = new ArrayList<>();
 
     public Space() {
 
-    }
-
-
-    /* Adds asteroid to space object */
-
-    public void addAsteroid(){
+        /* Constructs and returns a new Space object. */
 
     }
 
+    public void addAsteroid(Asteroid a) {
 
-    /* Adds ship to space object */
+        /* Adds a Asteroid to the Space. */
 
-    public void addShip(){
-
+        asteroids.add(a);
     }
 
+    public void addShip(Ship s) {
 
-    /* Does all interactions of objects in the space */
+        /* Adds a Ship to the Space. */
 
-    public void updateSpace(boolean[] keys){
-        for(Ship ship: allShips){
-            ship.accelerate(keys);
-            ship.shoot(keys);
-        }
+        ships.add(s);
     }
 
-
-    /* Displays the space to the screen */
-
-    public void update(Graphics screen){
-        for(Ship ship : allShips){
-            ship.update(screen);
-        }
-        for(Asteroid asteroid : allAsteroids){
-            asteroid.update(screen);
-        }
-    }
-
-
-    /* Area the ship, asteroids, and bullets cannot pass through */
+    // will add some new update methods later
 
     private class Wall {
 
-    /* Used to make Wall objects. */
+    /* Used to make Wall objects, impervious barriers with some special effects. */
 
         public Wall() {
 
-        /* Constructs a Wall. */
+        /* Constructs and returns a new Wall object. */
 
         }
     }
-
 }
 
 
