@@ -29,9 +29,11 @@ class Asteroid {
 
     private static int count = 0;  // to count active asteroids
     private double x, y, xVel, yVel, rotation;  // asteroid state of motion
+    private int hitboxSideSize[] = {30, 80, 150};
     private int size;
     private Polygon body;  // graphical and structural representation
     private Image[] imgs;
+    private boolean exists = true;
 
     // Constructor //
 
@@ -44,8 +46,16 @@ class Asteroid {
         this.xVel = this.yVel = 0;
         this.rotation = rotation;
 
+
         // make shape somehow
         // add images
+    }
+
+    public void shatter(){
+        this.exists = false;
+        if(size != 0){
+            //Asteroid asteroidOne = new Asteroid(this.size - 1, this.x + )
+        }
     }
 
     public void update(Graphics comp) {
@@ -79,21 +89,20 @@ class Ship {
     private boolean isAccelerating;
     private Polygon body;
     private Image[] imgs;
+    final int width = 50;
+    final int height = 50;
 
     public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
 
         /* Constructs and returns a new Ship object. */
 
         this.ID = count ++;
-
         this.x = x; this.y = y;
         this.accel = accel;
         this.drag = drag;
         this.turnSpeed = turnSpeed;
         this.ammo = ammo;
 
-        // make shape
-        // add images
     }
 
     public static int getCount() {
@@ -103,10 +112,11 @@ class Ship {
     public void accelerate(boolean[] keys) {
 
         /* Moves the Ship considering the currently pressed keys. */
-
+        isAccelerating = false;
         if (keys[controls[this.ID][FORWARD]]) {  // moving forward
             this.vx += this.accel * Math.cos(this.angle);
             this.vy += this.accel * Math.sin(this.angle);
+            isAccelerating = true;
         } if (keys[controls[this.ID][RIGHT]]) {  // turning right
             this.angle -= this.turnSpeed;
         } if (keys[controls[this.ID][LEFT]]) {  // turning left
@@ -119,6 +129,9 @@ class Ship {
 
     public void move() {
         // must factor in wall and boundary collisions
+        this.x += this.vx;
+        this.y += this.vy;
+
     }
 
     public void fire() {
@@ -134,6 +147,8 @@ class Ship {
 
         // magic happens here
     }
+
+
     private class Bullet {
 
 
@@ -181,7 +196,7 @@ class Space {
     private ArrayList<Ship> ships = new ArrayList<>();
     private ArrayList<Asteroid> asteroids = new ArrayList<>();
 
-    public Space() {
+    public Space(String AsteroidData, boolean asteroidSpawn, int width, int height) {
 
         /* Constructs and returns a new Space object. */
 
@@ -199,6 +214,16 @@ class Space {
         /* Adds a Ship to the Space. */
 
         ships.add(s);
+    }
+
+    public void update(Graphics screen){
+
+        for(Ship ship : ships){
+            ship.update(screen);
+        }
+        for(Asteroid asteroid : asteroids){
+            asteroid.update(screen);
+        }
     }
 
     // will add some new update methods later

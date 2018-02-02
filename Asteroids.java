@@ -11,6 +11,7 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
     static Asteroids frame;
     final int WIDTH = 1280;
     final int HEIGHT = 720;
+    GameStates currentGameState = GameStates.MAIN;
 
     public Asteroids() {
         super("Shooty Circles");
@@ -41,9 +42,15 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
     }
 
     public void actionPerformed(ActionEvent evt){
-        if(game != null){
-            game.refresh();
-            game.repaint();
+        switch(currentGameState){
+            case MAIN:
+
+            case HELP:
+
+            case CREDITS:
+
+            default:
+                break;
         }
     }
 
@@ -59,9 +66,6 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
 class GamePanel extends JPanel {
     private boolean[] keys;
-    GameStates currentGameState = GameStates.MAIN;
-
-
 
     public GamePanel(){
         keys = new boolean[KeyEvent.KEY_LAST+1];
@@ -73,29 +77,10 @@ class GamePanel extends JPanel {
     }
 
     public void refresh(){
-        switch(currentGameState){
-            case MAIN:
 
-            case HELP:
-
-            case CREDITS:
-
-            default:
-                break;
-        }
     }
 
     public void paintComponent(Graphics screen){
-        switch(currentGameState){
-            case MAIN:
-
-            case HELP:
-
-            case CREDITS:
-
-            default:
-                break;
-        }
 
     }
 }
