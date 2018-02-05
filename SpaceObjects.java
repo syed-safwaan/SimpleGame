@@ -29,40 +29,64 @@ class Asteroid {
 
     private static int count = 0;  // to count active asteroids
     private double x, y, xVel, yVel, rotation;  // asteroid state of motion
-    private int hitboxSideSize[] = {30, 80, 150};
+    private int hitBoxSideSize[] = {30, 80, 150};
+    private int healthSize[] = {3, 10, 30};
     private int size;
+    private int rectSide = hitBoxSideSize[size];
+    private int health = healthSize[size];
     private Polygon body;  // graphical and structural representation
     private Image[] imgs;
+
     private boolean exists = true;
 
     // Constructor //
 
-    public Asteroid(int size, double x, double y, double rotation) {
+    public Asteroid(int size, double x, double y, double xVel, double yVel, double rotation) {
 
         /* Constructs and returns a new Asteroid object. */
 
         this.size = size;
         this.x = x; this.y = y;
-        this.xVel = this.yVel = 0;
+        this.xVel = xVel;
+        this.yVel = yVel;
         this.rotation = rotation;
-
-
-        // make shape somehow
-        // add images
     }
 
-    public void shatter(){
+    /* When an asteroid is broken, it breaks into 3 smaller ones */
+
+    public Asteroid[] shatter(){
         this.exists = false;
         if(size != 0){
-            //Asteroid asteroidOne = new Asteroid(this.size - 1, this.x + )
+            Asteroid asteroidOne = new Asteroid(this.size - 1, this.x, this.y, xVel - 1, yVel - 1, rotation + Math.random()*2-1);
+            Asteroid asteroidTwo = new Asteroid(this.size - 1, this.x + this.rectSide/2, this.y, xVel + 1, yVel - 1, rotation + Math.random()*2-1);
+            Asteroid asteroidThree = new Asteroid(this.size - 1, this.x + this.rectSide/3, this.y + this.rectSide/2, xVel + 1, yVel + 1, rotation + Math.random()*2-1);
+            Asteroid[] brokenAsteroids = {asteroidOne, asteroidTwo, asteroidThree};
+            return brokenAsteroids;
+        }
+        else{
+            return new Asteroid[]{};  // asteroid is broken, no new ones to return
         }
     }
+
+    /* Moves asteroid depending on velocity */
+
+    public void move(){
+        this.x += this.xVel;
+        this.y += this.yVel;
+    }
+
+    /* health reduction method */
+
+    public void removeHealth(int damage){
+        this.health -= damage;
+    }
+
+    /* Display asteroid to screen */
 
     public void update(Graphics comp) {
 
         /* Draws the Asteroid onto a given Graphics component. */
 
-        // draw this asteroid using some dank shape construct alg
     }
 }
 
@@ -73,7 +97,7 @@ class Ship {
     // Fields //
 
     private static int count = 0;  // to count active Ships
-//    private static int maxCount = 4;  // max active Ships
+    private static int maxCount = 2;  // max active Ships
 
     // Controls
     private static int controls[][] = {
