@@ -52,6 +52,7 @@ class Asteroid {
         this.rotation = rotation;
     }
 
+
     /* When an asteroid is broken, it breaks into 3 smaller ones */
 
     public Asteroid[] shatter(){
@@ -68,6 +69,7 @@ class Asteroid {
         }
     }
 
+
     /* Moves asteroid depending on velocity */
 
     public void move(){
@@ -75,11 +77,34 @@ class Asteroid {
         this.y += this.yVel;
     }
 
-    /* health reduction method */
+
+    /* Checks for collision with another asteroid */
+
+    public boolean isAsteroidCollision(Asteroid asteroid){
+        return true;
+    }
+
+
+    /* Checks for collision with a bullet */
+
+    public boolean isBulletCollision(Ship.Bullet bullet){
+        return true;
+    }
+
+
+    /* Checks for collision with a ship */
+
+    public boolean isShipCollision(Ship ship){
+        return true;
+    }
+
+
+    /* Health reduction method */
 
     public void removeHealth(int damage){
         this.health -= damage;
     }
+
 
     /* Display asteroid to screen */
 
@@ -147,6 +172,7 @@ class Ship {
             this.angle += this.turnSpeed;
         }
 
+        // slowing ship down by a factor gives ship a max speed
         this.vx *= this.drag;
         this.vy *= this.drag;
     }
@@ -173,7 +199,7 @@ class Ship {
     }
 
 
-    private class Bullet {
+    public class Bullet {
 
 
         /* Template for Bullet objects, the primary offensive projectile of the game. */
@@ -200,6 +226,13 @@ class Ship {
             this.x += this.speed * Math.cos(this.angle);
             this.y += this.speed * Math.sin(this.angle);
         }
+
+
+        /* Displays bullet to screen */
+
+        public void update(Graphics screen){
+
+        }
     }
 
 
@@ -219,6 +252,7 @@ class Space {
 
     private ArrayList<Ship> ships = new ArrayList<>();
     private ArrayList<Asteroid> asteroids = new ArrayList<>();
+    private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 
     public Space(String AsteroidData, boolean asteroidSpawn, int width, int height) {
 
@@ -247,6 +281,9 @@ class Space {
         }
         for(Asteroid asteroid : asteroids){
             asteroid.update(screen);
+        }
+        for(Ship.Bullet bullet : bullets){
+            bullet.update(screen);
         }
     }
 
