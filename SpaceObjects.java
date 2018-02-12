@@ -126,15 +126,18 @@ class Ship {
 
     // Controls
     private static int controls[][] = {
-        { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT },
-        { KeyEvent.VK_W,  KeyEvent.VK_D,     KeyEvent.VK_S,    KeyEvent.VK_A }
+        { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_SPACE},
+        { KeyEvent.VK_W,  KeyEvent.VK_D,     KeyEvent.VK_S,    KeyEvent.VK_A,    KeyEvent.VK_R}
     };
 
     // Name vars for direction
-    private static int FORWARD = 0, RIGHT = 1, LEFT = 2, BACK = 3;
+    private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
 
     private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
-    private int ID, ammo;  // ID used for identification
+    private int ID;  // ID used for identification
+    private int ammo;
+    private int attackRate;
+    private int shootingCooldown;
     private boolean isAccelerating;
     private Polygon body;
     private Image[] imgs;
@@ -184,11 +187,16 @@ class Ship {
 
     }
 
-    public void fire() {
+    public Bullet fire(boolean[] keys) {
 
-        /* TBD */
-
-        // will be called on mouseclick
+        if (keys[controls[this.ID][SHOOT]]){
+            if (this.shootingCooldown < 0) {
+                this.shootingCooldown = this.attackRate;
+                Bullet tempBullet = new Bullet(this.x, this.y, this.angle, 4);
+                return tempBullet;
+            }
+        }
+        return null;
     }
 
     public void update(Graphics comp) {
@@ -274,9 +282,12 @@ class Space {
         ships.add(s);
     }
 
-    public void update(Graphics screen){
+    public void update(Graphics screen, boolean[] keys){
 
         for(Ship ship : ships){
+            ship.accelerate(keys);
+            ship.move();
+            ship.fire(keys);
             ship.update(screen);
         }
         for(Asteroid asteroid : asteroids){
@@ -285,6 +296,12 @@ class Space {
         for(Ship.Bullet bullet : bullets){
             bullet.update(screen);
         }
+
+        //Checking for objects that must be removed
+        for(int i = asteroids.size(); i > 0; i--){
+            asteroids.get(i).shatter();
+        }
+
     }
 
     // will add some new update methods later
