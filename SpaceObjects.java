@@ -1,16 +1,16 @@
 /*
     Adam Mehdi & Syed Safwaan
     SpaceObjects.java
-    A collection of methods for objects in use during the actual gameplay components of the program.
+    A collection of methods for objects in use during the actual gameplay of the program.
 
     Classes:
     - SpaceObjects  To manage the other objects (maybe)
     - Asteroid      The "enemies" of the game
     - Ship          The playable objects
-    - Bullet        The Ship's main weapon
-    - PowerUp       For augmenting the Ship's abilities
+    - > Bullet        The Ship's main weapon
+    - > PowerUp       For augmenting the Ship's abilities
     - Space         The playground of the other objects
-    - Space.Wall    A Space component that involves barriers and interesting physics
+    - > Wall    A Space component that involves barriers and interesting physics
 */
 
 import java.awt.*;
@@ -28,16 +28,13 @@ class Asteroid {
     // Fields //
 
     private static int count = 0;  // to count active asteroids
+
     private double x, y, xVel, yVel, rotation;  // asteroid state of motion
-    private int hitBoxSideSize[] = {30, 80, 150};
-    private int healthSize[] = {3, 10, 30};
-    private int size;
-    private int rectSide = hitBoxSideSize[size];
-    private int health = healthSize[size];
+    private int size, rectSize, hp;
     private Polygon body;  // graphical and structural representation
     private Image[] imgs;
 
-    private boolean exists = true;
+    private boolean exists;
 
     // Constructor //
 
@@ -45,64 +42,78 @@ class Asteroid {
 
         /* Constructs and returns a new Asteroid object. */
 
+        int sizes[] = {30, 80, 150}, hpSizes[] = {3, 10, 30};  // to assign asteroid properties on init
+
         this.size = size;
         this.x = x; this.y = y;
         this.xVel = xVel;
         this.yVel = yVel;
         this.rotation = rotation;
+
+        this.rectSize = sizes[size];
+        this.hp = hpSizes[size];
+
+        this.exists = true;
     }
 
-
-    /* When an asteroid is broken, it breaks into 3 smaller ones */
 
     public Asteroid[] shatter(){
+
+        /* Sets the existence of the current Asteroid to false and returns 3 new smaller asteroids in an array. */
+
         this.exists = false;
-        if(size != 0){
-            Asteroid asteroidOne = new Asteroid(this.size - 1, this.x, this.y, xVel - 1, yVel - 1, rotation + Math.random()*2-1);
-            Asteroid asteroidTwo = new Asteroid(this.size - 1, this.x + this.rectSide/2, this.y, xVel + 1, yVel - 1, rotation + Math.random()*2-1);
-            Asteroid asteroidThree = new Asteroid(this.size - 1, this.x + this.rectSide/3, this.y + this.rectSide/2, xVel + 1, yVel + 1, rotation + Math.random()*2-1);
-            Asteroid[] brokenAsteroids = {asteroidOne, asteroidTwo, asteroidThree};
-            return brokenAsteroids;
+
+        if(size > 0) {
+            return new Asteroid[] {
+                new Asteroid(this.size - 1, this.x, this.y, xVel - 1, yVel - 1, rotation + Math.random() * 2 - 1),
+                new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, xVel + 1, yVel - 1, rotation + Math.random() * 2 - 1),
+                new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, xVel + 1, yVel + 1, rotation + Math.random() * 2 - 1)
+            };
         }
-        else{
-            return new Asteroid[]{};  // asteroid is broken, no new ones to return
-        }
+        else return new Asteroid[] {};  // asteroid is broken, no new ones to return
     }
 
 
-    /* Moves asteroid depending on velocity */
-
     public void move(){
+
+        /* Moves asteroid depending on velocity. */
+
         this.x += this.xVel;
         this.y += this.yVel;
     }
 
 
-    /* Checks for collision with another asteroid */
 
-    public boolean isAsteroidCollision(Asteroid asteroid){
+
+    public boolean collideAsteroid(Asteroid asteroid){
+
+        /* Checks for collision with another Asteroid. */
+
         return true;
     }
 
 
-    /* Checks for collision with a bullet */
 
-    public boolean isBulletCollision(Ship.Bullet bullet){
+    public boolean collideBullet(Ship.Bullet bullet){
+
+        /* Checks for collision with a Bullet. */
+
         return true;
     }
 
 
-    /* Checks for collision with a ship */
+    public boolean collideShip(Ship ship){
 
-    public boolean isShipCollision(Ship ship){
+        /* Checks for collision with a Ship. */
+
         return true;
     }
 
+    public void takeDmg(int damage){
 
-    /* Health reduction method */
+        /* Reduces Asteroid health by a given amount. */
 
-    public void removeHealth(int damage){
-        this.health -= damage;
+        this.hp -= damage;
     }
 
 
@@ -135,14 +146,11 @@ class Ship {
 
     private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
     private int ID;  // ID used for identification
-    private int ammo;
-    private int attackRate;
-    private int shootingCooldown;
+    private int ammo, attackRate, shootingCooldown;
     private boolean isAccelerating;
     private Polygon body;
     private Image[] imgs;
-    final int width = 50;
-    final int height = 50;
+    private final int width = 50, height = 50;
 
     public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
 
@@ -154,7 +162,6 @@ class Ship {
         this.drag = drag;
         this.turnSpeed = turnSpeed;
         this.ammo = ammo;
-
     }
 
     public static int getCount() {
@@ -164,6 +171,7 @@ class Ship {
     public void accelerate(boolean[] keys) {
 
         /* Moves the Ship considering the currently pressed keys. */
+
         isAccelerating = false;
         if (keys[controls[this.ID][FORWARD]]) {  // moving forward
             this.vx += this.accel * Math.cos(this.angle);
@@ -175,7 +183,7 @@ class Ship {
             this.angle += this.turnSpeed;
         }
 
-        // slowing ship down by a factor gives ship a max speed
+        // Slowing ship down by a factor gives ship a max speed
         this.vx *= this.drag;
         this.vy *= this.drag;
     }
@@ -215,6 +223,7 @@ class Ship {
         // Fields //
 
         private double x, y, angle, speed;
+        private boolean exists;
 
         // Constructor //
 
@@ -225,6 +234,8 @@ class Ship {
             this.x = x; this.y = y;
             this.angle = angle;
             this.speed = speed;
+
+            this.exists = true;
         }
 
         public void move() {

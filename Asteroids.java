@@ -1,3 +1,12 @@
+/*
+    Adam Mehdi & Syed Safwaan
+    Asteroids.java
+    The main file of the program.
+
+    Classes:
+    -
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -5,7 +14,8 @@ import javax.swing.*;
 
 enum GameStates {MAIN, HELP, CREDITS, STARTGAME};
 
-public class Asteroids extends JFrame implements ActionListener,KeyListener{
+public class Asteroids extends JFrame implements ActionListener {
+
     Timer myTimer;
     GamePanel game;
     static Asteroids frame;
@@ -23,22 +33,8 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
         game = new GamePanel();
         add(game);
-        addKeyListener(this);
         setResizable(false);
         setVisible(true);
-    }
-
-    public void keyTyped(KeyEvent e) {}
-
-
-    /* Updates which keys are currently pressed by the user */
-
-    public void keyPressed(KeyEvent e) {
-        game.setKey(e.getKeyCode(),true);
-    }
-
-    public void keyReleased(KeyEvent e) {
-        game.setKey(e.getKeyCode(),false);
     }
 
     public void actionPerformed(ActionEvent evt){
@@ -57,7 +53,7 @@ public class Asteroids extends JFrame implements ActionListener,KeyListener{
 
     /* Main method where the program starts */
 
-    public static void main(String[] arguments) {
+    public static void main(String[] args) {
         frame = new Asteroids();
     }
 }
