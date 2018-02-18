@@ -74,6 +74,10 @@ class Menu extends JPanel {
 		for (GameButton button : buttons) this.add(button);
 	}
 
+	public GameButton[] getButtons() {
+		return this.buttons;
+	}
+
 	public String getName() {
 		return this.name;
 	}
