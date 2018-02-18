@@ -21,6 +21,11 @@ class GameButton extends JButton {
     	this.setSize(dimensions);
     	this.setLocation(pos);
 
+    	this.setBorderPainted(false);
+    	this.setBorder(null);
+    	this.setMargin(new Insets(0, 0, 0, 0));
+    	this.setContentAreaFilled(false);
+
     	this.setIcon(idleImg);
     	this.setRolloverIcon(hoverImg);
     	this.setPressedIcon(hoverImg);
