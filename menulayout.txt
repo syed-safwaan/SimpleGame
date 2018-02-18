@@ -1,0 +1,26 @@
+["open", "gamemodes", "options", "difficulty", "files", "create"]
+
+"open"
+- start game -> "gamemodes"
+- options -> "options"
+- exit -> `System.exit(0)`
+
+"gamemodes"
+- story -> "files"
+- arcade -> `Space.Arcade(1)`
+- 2 player arcade -> `Space.Arcade(2)`
+
+"difficulty"
+- easy -> `Options.diff = ...`
+- medium -> `Options.diff = ...`
+- hard -> `Options.diff = ...`
+all -> "create"
+
+"files"
+- filled file -> `Space.Story(...)`
+- new file -> "difficulty"
+
+"create"
+- use textbox to get name
+- start -> "Space.Story(...)"
+

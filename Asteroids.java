@@ -25,19 +25,26 @@ public class Asteroids extends JFrame implements ActionListener{
 	private Menu[] menus;
 	private Space space;
 
-//	private CardLayout cardLayout = new CardLayout();
-	JPanel main = new JPanel();
+	private CardLayout cardLayout = new CardLayout();
 
+	Menu startMenu, optionsMenu, diffMenu, modeMenu, creationMenu;
 	GameButton startButton, optionsButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton;
+
+	JPanel main;
 
 	public Asteroids() {
 		super("Shooty Circles");
 		setSize(1280, 720);
 
 		startButton = new GameButton(this, new Dimension(338, 96), new Point(100, 200), new ImageIcon("Images\\Button_START0.png"), new ImageIcon("Images\\Button_START1.png"), "main");
+		startMenu = new Menu (
+			new GameButton[] { startButton/*, optionsButton, exitButton */},
+			"open"
+		);
 
-		main.setLayout(null);
-		main.add(startButton);
+		main = new JPanel(cardLayout);
+		main.add(startMenu, startMenu.getName());
+//		main.add(startButton);
 		add(main);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
