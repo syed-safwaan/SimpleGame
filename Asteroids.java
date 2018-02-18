@@ -7,76 +7,43 @@
     -
 */
 
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import javax.swing.*;
+import java.awt.image.*;
+import java.io.*;
 
-enum GameStates {MAIN, HELP, CREDITS, STARTGAME};
+public class Asteroids extends JFrame implements ActionListener{
 
-public class Asteroids extends JFrame implements ActionListener {
+	public static void main(String[] args) {
+		new Asteroids();
+	}
 
-    Timer myTimer;
-    GamePanel game;
-    static Asteroids frame;
-    final int WIDTH = 1280;
-    final int HEIGHT = 720;
-    GameStates currentGameState = GameStates.MAIN;
+	private Timer timer;
+	private Menu[] menus;
 
-    public Asteroids() {
-        super("Shooty Circles");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(WIDTH, HEIGHT);
+	public Asteroids() {
+		super("Shooty Circles");
+		setSize(1280, 720);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        myTimer = new Timer(10, this);	 // trigger every 10 ms
-        myTimer.start();  // start timer
+		BufferedImage background = null;
+		try {
+			background = ImageIO.read(new File("Images/Background_MainScreen.jpg"));
+		} catch (IOException e) {
+			System.out.println("Resources not found...");
+			System.exit(0);
+		}
 
-        game = new GamePanel();
-        add(game);
-        setResizable(false);
-        setVisible(true);
-    }
+		GameButton exit = new GameButton(this, new Dimension(338, 96), new Point(100, 100), new ImageIcon("Images/Button_EXIT0"), new ImageIcon("Images/Button_EXIT1"), "start");
 
-    public void actionPerformed(ActionEvent evt){
-        switch(currentGameState){
-            case MAIN:
+		setVisible(true);
+	}
 
-            case HELP:
+	@Override
+	public void actionPerformed(ActionEvent e) {
 
-            case CREDITS:
-
-            default:
-                break;
-        }
-    }
-
-
-    /* Main method where the program starts */
-
-    public static void main(String[] args) {
-        frame = new Asteroids();
-    }
-}
-
-
-
-class GamePanel extends JPanel {
-    private boolean[] keys;
-
-    public GamePanel(){
-        keys = new boolean[KeyEvent.KEY_LAST+1];
-        setSize(WIDTH, HEIGHT);
-    }
-
-    public void setKey(int k, boolean v) {
-        keys[k] = v;
-    }
-
-    public void refresh(){
-
-    }
-
-    public void paintComponent(Graphics screen){
-
-    }
+	}
 }

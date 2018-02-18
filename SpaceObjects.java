@@ -17,10 +17,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-class SpaceObjects {
-
-}
-
 class Asteroid {
 
     /* Template for Asteroid objects, the main antagonistic entities in the game. */
@@ -32,7 +28,6 @@ class Asteroid {
     private double x, y, xVel, yVel, rotation;  // asteroid state of motion
     private int size, rectSize, hp;
     private Polygon body;  // graphical and structural representation
-    private Image[] imgs;
 
     private boolean exists;
 
@@ -56,6 +51,11 @@ class Asteroid {
         this.exists = true;
     }
 
+    private void makeShape() {
+
+        /* Constructs a Polygon for the Asteroid. */
+
+    }
 
     public Asteroid[] shatter(){
 
@@ -80,33 +80,6 @@ class Asteroid {
 
         this.x += this.xVel;
         this.y += this.yVel;
-    }
-
-
-
-
-    public boolean collideAsteroid(Asteroid asteroid){
-
-        /* Checks for collision with another Asteroid. */
-
-        return true;
-    }
-
-
-
-    public boolean collideBullet(Ship.Bullet bullet){
-
-        /* Checks for collision with a Bullet. */
-
-        return true;
-    }
-
-
-    public boolean collideShip(Ship ship){
-
-        /* Checks for collision with a Ship. */
-
-        return true;
     }
 
     public void takeDmg(int damage){
@@ -195,16 +168,19 @@ class Ship {
 
     }
 
-    public Bullet fire(boolean[] keys) {
+    public ArrayList<String> queryAction(boolean[] keys) {
 
-        if (keys[controls[this.ID][SHOOT]]){
-            if (this.shootingCooldown < 0) {
-                this.shootingCooldown = this.attackRate;
-                Bullet tempBullet = new Bullet(this.x, this.y, this.angle, 4);
-                return tempBullet;
-            }
+        ArrayList<String> actions = new ArrayList<>();
+
+        if (keys[controls[this.ID][SHOOT]] && this.shootingCooldown < 0) {
+            actions.add("fire");
         }
-        return null;
+
+        return actions;
+    }
+
+    public Bullet fire() {
+        return new Bullet(this.x, this.y, this.angle, 4);
     }
 
     public void update(Graphics comp) {
@@ -273,7 +249,7 @@ class Space {
     private ArrayList<Asteroid> asteroids = new ArrayList<>();
     private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 
-    public Space(String AsteroidData, boolean asteroidSpawn, int width, int height) {
+    public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
 
         /* Constructs and returns a new Space object. */
 
@@ -298,13 +274,15 @@ class Space {
         for(Ship ship : ships){
             ship.accelerate(keys);
             ship.move();
-            ship.fire(keys);
+            ArrayList<String> actions = ship.queryAction(keys);
             ship.update(screen);
         }
         for(Asteroid asteroid : asteroids){
+
             asteroid.update(screen);
         }
         for(Ship.Bullet bullet : bullets){
+
             bullet.update(screen);
         }
 
@@ -313,6 +291,12 @@ class Space {
             asteroids.get(i).shatter();
         }
 
+    }
+
+    private class Physics {
+        public boolean collide(Ship s, Asteroid a) {
+            return true;
+        }
     }
 
     // will add some new update methods later
@@ -328,5 +312,3 @@ class Space {
         }
     }
 }
-
-

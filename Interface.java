@@ -1,37 +1,88 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
-class Interface {
+class GameButton extends JButton {
+
+	private Dimension dimensions;
+	private Point pos;
+	private ImageIcon idleImg, hoverImg;
+	private String menuName;
+
+    public GameButton(ActionListener frame, Dimension dimensions, Point pos, ImageIcon idleImg, ImageIcon hoverImg, String menuName) {
+    	this.dimensions = dimensions;
+    	this.pos = pos;
+    	this.idleImg = idleImg;
+    	this.hoverImg = hoverImg;
+    	this.menuName = menuName;
+
+    	this.addActionListener(frame);
+
+    	this.setSize(dimensions);
+    	this.setLocation(pos);
+
+    	this.setIcon(idleImg);
+    	this.setRolloverIcon(hoverImg);
+    	this.setPressedIcon(hoverImg);
+	}
+
+	public Dimension getDimensions() {
+		return this.dimensions;
+	}
+
+	public Point getPos() {
+		return pos;
+	}
+
+	public int getWidth() {
+    	return (int) this.dimensions.getWidth();
+	}
+
+	public int getHeight() {
+    	return (int) this.dimensions.getHeight();
+	}
+
+	public int getX() {
+    	return (int) this.pos.getX();
+	}
+
+	public int getY() {
+    	return (int) this.pos.getY();
+	}
+
+	public String getMenuName() {
+    	return this.menuName;
+	}
 }
 
-class Menu {
-    Image background;
-    Graphics screen;
-    JButton[] buttons;
-    String buttonPressed;
+class Menu extends JPanel {
 
+	private ImageIcon background;
+	private GameButton[] buttons;
+	private ImageIcon[] images;
+	private Point[] imgPoses;
+	private String name;
 
+	public Menu(ImageIcon background, GameButton[] buttons, ImageIcon[] images, Point[] imgPoses, String name) {
 
-    public Menu(Image background, Graphics screen, JButton... buttons){
-        this.buttons = buttons;
-        this.background = background;
-    }
+		this.background = background;
+		this.buttons = buttons;
+		this.images = images;
+		this.imgPoses = imgPoses;
+		this.name = name;
 
+		for (GameButton button : buttons) this.add(button);
+	}
 
-    /* Main method where the program starts */
+	public String getName() {
+		return this.name;
+	}
 
-    public void update(){
-        screen.drawImage(background, 0, 0, Asteroids.frame.game);
-    }
-
-
-    /* Checks if a button was clicked in specific frame */
-
-    public String checkButtons(ActionEvent action){
-        buttonPressed = "";
-        return buttonPressed;
-    }
-
-
+	@Override
+	public void paintComponent(Graphics g) {
+		g.drawImage(this.background.getImage(), 0, 0, this);
+		for (int i = 0; i < images.length; i ++) {
+			g.drawImage(this.images[i].getImage(), (int) imgPoses[i].getX(), (int) imgPoses[i].getY(), this);
+		}
+	}
 }
