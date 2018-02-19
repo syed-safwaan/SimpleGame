@@ -294,6 +294,9 @@ class Space {
     }
 
     private class Physics {
+
+        /* Checks if ship collided with an asteroid */
+
         public boolean collide(Ship s, Asteroid a) {
             return true;
         }
