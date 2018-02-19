@@ -139,6 +139,26 @@ class Asteroid {
 		return this.body;
 	}
 
+	public double getvx() {
+		return this.xVel;
+	}
+
+	public double getvy() {
+		return this.yVel;
+	}
+
+	public int getSize() {
+		return this.size;
+	}
+
+	public void setvx(double vx) {
+		this.xVel = vx;
+	}
+
+	public void setvy(double vy) {
+		this.yVel = vy;
+	}
+
 	public boolean exists() {
 		return this.exists;
 	}
@@ -176,6 +196,7 @@ class Ship {
 	int[] polygonY = {0, 100, 100};
 	private Image[] imgs;
 	private final int width = 50, height = 50;
+	private boolean exists = true;
 
 
 	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
@@ -252,7 +273,7 @@ class Ship {
 	}
 
 	public Bullet fire() {
-		return new Bullet(this.x, this.y, this.angle, 4);
+		return new Bullet(this.x, this.y, this.angle, 4, 3);
 	}
 
 	public void update(Graphics comp) {
@@ -266,6 +287,25 @@ class Ship {
 		return this.body;
 	}
 
+	public double getvx() {
+		return this.vx;
+	}
+
+	public double getvy() {
+		return this.vy;
+	}
+
+	public void setvx(double vx) {
+		this.vx = vx;
+	}
+
+	public void setvy(double vy) {
+		this.vy = vy;
+	}
+
+	public void setExists(boolean exists) {
+		this.exists = exists;
+	}
 
 	public class Bullet {
 
@@ -278,10 +318,11 @@ class Ship {
 		private boolean exists;
 		private Rectangle hitbox;
 		private int radius = 30;
+		private int damage;
 
 		// Constructor //
 
-		private Bullet(double x, double y, double angle, double speed) {
+		private Bullet(double x, double y, double angle, double speed, int damage) {
 
 			/* Constructs and returns a new Bullet object. */
 
@@ -295,7 +336,7 @@ class Ship {
 		}
 
 		public void makeShape() {
-			this.hitbox = new Rectangle((int) this.x - 15, (int) this.y - 15, this.radius, this.radius);
+			this.hitbox = new Rectangle((int) this.x - this.radius, (int) this.y - this.radius, this.radius * 2, this.radius * 2);
 		}
 
 		public void move() {
@@ -306,10 +347,26 @@ class Ship {
 			this.y += this.speed * Math.sin(this.angle);
 		}
 
-		public Rectangle getShape() {
-			return this.hitbox;
-		}
 
+        public Rectangle getShape(){
+            return this.hitbox;
+        }
+
+        public int getDamage(){
+            return this.damage;
+        }
+
+        public double getvx(){
+            return this.speed * Math.cos(this.angle);
+        }
+
+        public double getvy(){
+            return this.speed * Math.sin(this.angle);
+        }
+
+        public void setExists(boolean exists){
+            this.exists = exists;
+        }
 
 		/* Displays bullet to screen */
 
@@ -455,29 +512,53 @@ class Space {
 			return !areaA.isEmpty();
 		}
 
-		public static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
-			//bounces asteroids
-		}
+        public static void colliding(Asteroid asteroidA, Asteroid asteroidB){
+            double newAvx = asteroidA.getvx() + asteroidB.getvx()*asteroidA.getSize()/asteroidB.getSize();
+            double newAvy = asteroidA.getvy() + asteroidB.getvy()*asteroidA.getSize()/asteroidB.getSize();
+            double newBvx = asteroidB.getvx() + asteroidA.getvx()*asteroidB.getSize()/asteroidA.getSize();
+            double newBvy = asteroidB.getvy() + asteroidA.getvy()*asteroidB.getSize()/asteroidA.getSize();
+            asteroidA.setvx(newAvx);
+            asteroidA.setvy(newAvy);
+            asteroidB.setvx(newBvx);
+            asteroidB.setvy(newBvy);
+        }
 
-		public static void colliding(Ship ship, Asteroid asteroid) {
-			//Kills ship
-		}
+        public static void colliding(Ship ship, Asteroid asteroid){
+            ship.setExists(false);
+        }
 
-		public static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
-			//Hurts asteroid, kills bullet
-		}
+        //Asteroid gets damaged
+        public static void colliding(Ship.Bullet bullet, Asteroid asteroid){
+            bullet.setExists(false);
+            asteroid.takeDmg(bullet.getDamage());
+            asteroid.setvx(asteroid.getvx() + bullet.getvx()/(5*asteroid.getSize()));
+            asteroid.setvy(asteroid.getvy() + bullet.getvy()/(5*asteroid.getSize()));
+        }
 
-		public static void colliding(Asteroid asteroid, Space.Wall wall) {
-			//Bounces asteroid
-		}
+        //Asteroid bounces off of wall
+        public static void colliding(Asteroid asteroid, Space.Wall wall){
+            if(wall.getWidth() > wall.getHeight()){ //Checks if wall is vertical or horizontal
+                asteroid.setvy(-asteroid.getvy());
+            }
+            else{
+                asteroid.setvx(-asteroid.getvx());
+            }
+        }
 
-		public static void colliding(Ship ship, Space.Wall wall) {
-			//Bounces ship
-		}
+        //Ship bounces off of wall
+        public static void colliding(Ship ship, Space.Wall wall){
+            if(wall.getWidth() > wall.getHeight()){ //Checks if wall is vertical or horizontal
+                ship.setvy(-ship.getvy());
+            }
+            else{
+                ship.setvx(-ship.getvx());
+            }
+        }
 
-		public static void colliding(Ship.Bullet bullet, Space.Wall wall) {
-			//Kills bullet
-		}
+        //Kills the bullet
+        public static void colliding(Ship.Bullet bullet, Space.Wall wall){
+            bullet.setExists(false);
+        }
 
 	}
 
@@ -504,10 +585,19 @@ class Space {
 
 		}
 
-		public Rectangle getShape() {
-			return this.rect;
-		}
-	}
+        public Rectangle getShape(){
+            return this.rect;
+        }
+
+        public int getWidth(){
+            return this.width;
+        }
+
+        public int getHeight(){
+            return this.height;
+        }
+
+    }
 
 	class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
