@@ -446,27 +446,27 @@ class Space {
         }
 
         public void colliding(Asteroid asteroidA, Asteroid asteroidB){
-
+            //bounces asteroids
         }
 
         public void colliding(Ship ship, Asteroid asteroid){
-
+            //Kills ship
         }
 
         public void colliding(Ship.Bullet bullet, Asteroid asteroid){
-
+            //Hurts asteroid, kills bullet
         }
 
         public void colliding(Asteroid asteroid, Space.Wall wall){
-
+            //Bounces asteroid
         }
 
         public void colliding(Ship ship, Space.Wall wall){
-
+            //Bounces ship
         }
 
         public void colliding(Ship.Bullet bullet, Space.Wall wall){
-
+            //Kills bullet
         }
 
     }
