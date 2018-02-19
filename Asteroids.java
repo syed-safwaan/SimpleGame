@@ -28,7 +28,6 @@ public class Asteroids extends JFrame implements ActionListener {
 
 	private Timer timer;  // framerate
 	private Space space;  // for the actual game
-	private boolean gameActive;  // to see if a game is being played
 
 	// Panel layout for the program
 
@@ -101,24 +100,21 @@ public class Asteroids extends JFrame implements ActionListener {
 			"diff"
 		);
 
+		space = new Space();
+
 		// Setting up the panels for the game
 		main = new JPanel(cardLayout);
 		main.add(startMenu, startMenu.getName());
 		main.add(optionsMenu, optionsMenu.getName());
 		main.add(modeMenu, modeMenu.getName());
 		main.add(diffMenu, diffMenu.getName());
+		main.add(space, "space");
 		add(main);
 
 		// Some final window config
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setVisible(true);
-
-//		timer = new timer(10, this);
-//		timer.start();
-
-		// Game is not active initially
-		gameActive = false;
 	}
 
 	@Override
@@ -129,33 +125,33 @@ public class Asteroids extends JFrame implements ActionListener {
 		// Event source
 		Object src = e.getSource();
 
-		// Handling the menu buttons
-		if (!gameActive) {
-			if (src == startButton) {
-				cardLayout.show(main, modeMenu.getName());
-			} else if (src == optionsButton) {
-				cardLayout.show(main, optionsMenu.getName());
-			} else if (src == exitButton) {
-				System.exit(0);
-			} else if (src == storyButton) {
-				System.out.println("To be incorporated at a later date!");
-			} else if (src == arcadeButton) {
-				// set up arcade game creds
-				cardLayout.show(main, diffMenu.getName());
-			} else if (src == arcadeMultButton) {
-				// start arcade mult session
-				cardLayout.show(main, diffMenu.getName());
-			} else if (src == easyDiffButton) {
-				// set up arcade game diff
-			} else if (src == medDiffButton) {
-				// set 2 med
-			} else if (src == hardDiffButton) {
-				// set 2 hard
-			} else if (src == modeBackButton || src == optionsBackButton) {
-				cardLayout.show(main, startMenu.getName());
-			} else if (src == diffBackButton) {
-				cardLayout.show(main, modeMenu.getName());
-			}
+		if (src == startButton) {
+			cardLayout.show(main, modeMenu.getName());
+		} else if (src == optionsButton) {
+			cardLayout.show(main, optionsMenu.getName());
+		} else if (src == exitButton) {
+			System.exit(0);
+		} else if (src == storyButton) {
+			System.out.println("To be incorporated at a later date!");
+		} else if (src == arcadeButton) {
+			// set up arcade game creds
+			cardLayout.show(main, diffMenu.getName());
+		} else if (src == arcadeMultButton) {
+			// start arcade mult session
+			cardLayout.show(main, diffMenu.getName());
+		} else if (src == easyDiffButton) {
+			space.init(1);
+			cardLayout.show(main, "space");
+		} else if (src == medDiffButton) {
+			space.init(2);
+			cardLayout.show(main, "space");
+		} else if (src == hardDiffButton) {
+			space.init(3);
+			cardLayout.show(main, "space");
+		} else if (src == modeBackButton || src == optionsBackButton) {
+			cardLayout.show(main, startMenu.getName());
+		} else if (src == diffBackButton) {
+			cardLayout.show(main, modeMenu.getName());
 		}
 	}
 }

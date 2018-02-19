@@ -541,15 +541,21 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	private Timer timer, asteroidsTimer;
 	private boolean[] keys;
-	private ImageIcon background;
+	private Image background;
 
-	public Space(int difficulty) {
+	public Space() {
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
 		this.addKeyListener(this);
 		this.setLayout(null);
+
+		this.background = new ImageIcon("Images\\Background_GameScreen.png").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
+	}
+
+	public void init(int difficulty) {
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
 
+		System.out.println("ay");
 		timer = new Timer(10, this);
 		timer.start();
 	}
@@ -680,7 +686,6 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	private static class Physics {
 
-
 		/* Checks if ship collided with an asteroid */
 
 		public static boolean collide(Shape a, Shape b) {
@@ -786,14 +791,16 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		Object src = e.getSource();
 
 		if (src == timer) {
-			repaint();
+			this.repaint();
+			this.queryCollisions();
+		} else if (src instanceof KeyEvent && ((KeyEvent) src).getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if (timer.isRunning()) timer.stop();
+			else timer.start();
 		}
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -809,7 +816,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		g.drawImage(background.getImage(), 0, 0, this);
-		Space.this.update(g);
+		g.drawImage(this.background, 0, 0, this);
+////		Space.this.update(g);
 	}
 }
