@@ -88,7 +88,7 @@ class Asteroid {
 		this.bodyType = (new Random()).nextInt(3);
 		this.makeShape();
 
-		weight += size * 3;
+		weight += (int)Math.pow(3, size);
 	}
 
 	public static int getWeight() {
@@ -547,9 +547,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
 		this.addKeyListener(this);
 		this.setLayout(null);
-
 		this.difficulty = difficulty;
-		Asteroid.setMaxWeight(Asteroid.getMaxWeight() + 18 * (difficulty - 1));
+		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
 
 		timer = new Timer(10, this);
 		timer.start();
@@ -560,6 +559,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		/* Constructs and returns a new Space object. */
 
 	}
+
+	public void spawnAsteroid(){
+
+    }
 
 	public void addAsteroid(Asteroid a) {
 
