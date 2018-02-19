@@ -26,6 +26,7 @@ class Asteroid {
 	// Fields //
 
 	private static int count = 0;  // to count active asteroids
+	private static int weight = 0, maxWeight = 30;
 	private double x, y, vx, vy, rotation, rotationVel;  // asteroid state of motion
 	private int size, rectSize, hp;
 	private int sizes[] = {30, 80, 200}, hpSizes[] = {3, 10, 30};  // to assign asteroid properties on init
@@ -87,6 +88,28 @@ class Asteroid {
 		this.bodyType = (new Random()).nextInt(3);
 		this.makeShape();
 
+		weight += size * 3;
+	}
+
+	public static int getWeight() {
+
+		/* Returns the current weight of all Asteroids. */
+
+		return weight;
+	}
+
+	public static int getMaxWeight() {
+
+		/* Returns the weight limit. */
+
+		return maxWeight;
+	}
+
+	public static void setMaxWeight(int max) {
+
+		/* Sets the weight limit. */
+
+		maxWeight = max;
 	}
 
 	private void makeShape() {
@@ -391,8 +414,6 @@ class Ship {
 
 	public class Bullet {
 
-
-
 		/* Template for Bullet objects, the primary offensive projectile of the game. */
 
 		// Fields //
@@ -423,6 +444,9 @@ class Ship {
 		}
 
 		public void makeShape() {
+
+			/* Constructs the Bullet hitbox Rectangle. */
+
 			this.hitbox = new Rectangle((int) this.x - this.radius, (int) this.y - this.radius, this.radius * 2, this.radius * 2);
 		}
 
@@ -505,8 +529,7 @@ class Ship {
 	}
 }
 
-
-class Space {
+class Space extends JPanel implements ActionListener, KeyListener {
 
 	/* Used for managing the rest of the active game objects. */
 
@@ -514,9 +537,23 @@ class Space {
 	private ArrayList<Asteroid> asteroids = new ArrayList<>();
 	private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 	private ArrayList<Space.Wall> walls = new ArrayList<>();
-	private int score;
+	private int score, difficulty;
 
-	private SpacePanel screen;
+	private Timer timer, asteroidsTimer;
+	private boolean[] keys;
+	private ImageIcon background;
+
+	public Space(int difficulty) {
+		keys = new boolean[KeyEvent.KEY_LAST + 1];
+		this.addKeyListener(this);
+		this.setLayout(null);
+
+		this.difficulty = difficulty;
+		Asteroid.setMaxWeight(Asteroid.getMaxWeight() + 18 * (difficulty - 1));
+
+		timer = new Timer(10, this);
+		timer.start();
+	}
 
 	public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
 
@@ -737,55 +774,39 @@ class Space {
 
 	}
 
-	class SpacePanel extends JPanel implements ActionListener, KeyListener {
+	public boolean getKeyPress(int keycode) {
+		return keys[keycode];
+	}
 
-		public Timer timer;
-		private boolean[] keys;
-		private ImageIcon background;
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object src = e.getSource();
 
-		public SpacePanel() {
-			keys = new boolean[KeyEvent.KEY_LAST + 1];
-			this.addKeyListener(this);
-			this.setLayout(null);
-
-			timer = new Timer(10, this);
-			timer.start();
+		if (src == timer) {
+			repaint();
 		}
+	}
 
-		public boolean getKeyPress(int keycode) {
-			return keys[keycode];
-		}
+	@Override
+	public void keyTyped(KeyEvent e) {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Object src = e.getSource();
+	}
 
-			if (src == timer) {
-				repaint();
-			}
-		}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		keys[e.getKeyCode()] = true;
+	}
 
-		@Override
-		public void keyTyped(KeyEvent e) {
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keys[e.getKeyCode()] = false;
+	}
 
-		}
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			keys[e.getKeyCode()] = true;
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			keys[e.getKeyCode()] = false;
-		}
-
-		@Override
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-
-			g.drawImage(background.getImage(), 0, 0, this);
-			Space.this.update(g);
-		}
+		g.drawImage(background.getImage(), 0, 0, this);
+		Space.this.update(g);
 	}
 }
