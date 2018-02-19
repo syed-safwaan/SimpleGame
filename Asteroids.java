@@ -114,7 +114,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		setResizable(false);
 		setVisible(true);
 
-//		timer = new Timer(10, this);
+//		timer = new timer(10, this);
 //		timer.start();
 
 		// Game is not active initially
