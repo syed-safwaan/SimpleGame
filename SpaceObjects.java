@@ -13,6 +13,7 @@
     - > Wall        A Space component that involves barriers and interesting physics
 */
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -249,6 +250,8 @@ class Space {
     private ArrayList<Asteroid> asteroids = new ArrayList<>();
     private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 
+    private SpacePanel screen;
+
     public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
 
         /* Constructs and returns a new Space object. */
@@ -286,7 +289,7 @@ class Space {
             bullet.update(screen);
         }
 
-        //Checking for objects that must be removed
+        // Checking for objects that must be removed
         for(int i = asteroids.size(); i > 0; i--){
             asteroids.get(i).shatter();
         }
@@ -314,4 +317,46 @@ class Space {
 
         }
     }
+
+    class SpacePanel extends JPanel implements KeyListener {
+
+    	private boolean[] keys;
+    	private ImageIcon background;
+
+    	public SpacePanel() {
+			keys = new boolean[KeyEvent.KEY_LAST + 1];
+			this.addKeyListener(this);
+			this.setLayout(null);
+		}
+
+		public boolean getKeyPress(int keycode) {
+    		return keys[keycode];
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			keys[e.getKeyCode()] = true;
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			keys[e.getKeyCode()] = false;
+		}
+
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+
+			g.drawImage(background.getImage(), 0, 0, this);
+
+			for (Ship ship : ships) ship.update(g);
+			for (Ship.Bullet bullet : bullets) bullet.update(g);
+			for (Asteroid asteroid : asteroids) asteroid.update(g);
+		}
+	}
 }
