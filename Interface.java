@@ -22,40 +22,40 @@ class GameButton extends JButton {
 	private Point pos;
 	private String menuName;  // references menu to transport to
 
-    public GameButton(ActionListener frame, Dimension dimensions, Point pos, String imgName, String menuName) {
+	public GameButton(ActionListener frame, Dimension dimensions, Point pos, String imgName, String menuName) {
 
-    	/* Constructs and returns a new GameButton object. */
+		/* Constructs and returns a new GameButton object. */
 
-    	this.dimensions = dimensions;
-    	this.pos = pos;
-    	this.menuName = menuName;
+		this.dimensions = dimensions;
+		this.pos = pos;
+		this.menuName = menuName;
 
-    	// Add the actionlistener so it actually works
-    	this.addActionListener(frame);
+		// Add the actionlistener so it actually works
+		this.addActionListener(frame);
 
-    	this.setSize(dimensions);
-    	this.setLocation(pos);
+		this.setSize(dimensions);
+		this.setLocation(pos);
 
-    	// Setting up button graphics
-    	this.setBorderPainted(false);
-    	this.setBorder(null);
-    	this.setMargin(new Insets(0, 0, 0, 0));
-    	this.setContentAreaFilled(false);
+		// Setting up button graphics
+		this.setBorderPainted(false);
+		this.setBorder(null);
+		this.setMargin(new Insets(0, 0, 0, 0));
+		this.setContentAreaFilled(false);
 
 		ImageIcon idleImg = new ImageIcon(String.format("Images\\Button_%s0.png", imgName));
 		ImageIcon hoverImg = new ImageIcon(String.format("Images\\Button_%s1.png", imgName));
 		ImageIcon pressedImg = new ImageIcon(String.format("Images\\Button_%s2.png", imgName));
 
-    	this.setIcon(idleImg);
-    	this.setRolloverIcon(hoverImg);
-    	this.setPressedIcon(pressedImg);
+		this.setIcon(idleImg);
+		this.setRolloverIcon(hoverImg);
+		this.setPressedIcon(pressedImg);
 	}
 
 	// Accessors //
 
 	public Dimension getDimensions() {
 
-    	/* Returns the dimensions of the GameButton as a Dimension object. */
+		/* Returns the dimensions of the GameButton as a Dimension object. */
 
 		return this.dimensions;
 	}
@@ -170,6 +170,6 @@ class Menu extends JPanel {
 
 		// Draw the background and title if possible
 		g.drawImage(this.background, 0, 0, this);
-		if (this.title != null)  g.drawImage(this.title.getImage(), 640 - this.title.getIconWidth() / 2, 30, this);
+		if (this.title != null) g.drawImage(this.title.getImage(), 640 - this.title.getIconWidth() / 2, 30, this);
 	}
 }

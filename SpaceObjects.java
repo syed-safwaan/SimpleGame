@@ -8,621 +8,697 @@
     - Asteroid      The "enemies" of the game
     - Ship          The playable objects
     - > Bullet      The Ship's main weapon
-    - > PowerUp     For augmenting the Ship's abilities
     - Space         The playground of the other objects
     - > Wall        A Space component that involves barriers and interesting physics
 */
 
-import javafx.scene.shape.Circle;
-
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.Timer;
 import java.awt.event.*;
 import java.util.*;
 import java.awt.geom.Area;
 
 class Asteroid {
 
-    /* Template for Asteroid objects, the main antagonistic entities in the game. */
+	/* Template for Asteroid objects, the main antagonistic entities in the game. */
 
-    // Fields //
+	// Fields //
 
-    private static int count = 0;  // to count active asteroids
-    private Random rand = new Random();
-    private double x, y, xVel, yVel, rotation, rotationVel;  // asteroid state of motion
-    private int size, rectSize, hp;
-    private int sizes[] = {30, 80, 200}, hpSizes[] = {3, 10, 30};  // to assign asteroid properties on init
-    private int bodyType;
-    private int[][][] polygonX = {
-            {
-                    {10, 30, 25, 0},
-                    {15, 30, 10, 0},
-                    {15, 30, 0}
-            },
-            {
-                    {40, 55, 80, 35, 0},
-                    {0, 0, 65, 80, 45},
-                    {0, 15, 50, 80, 25}
-            },
-            {
-                    {65, 200, 170, 80, 0, 0},
-                    {0, 0, 160, 200, 175, 120, 40},
-                    {0, 0, 70, 200, 170}
-            }
-    };
-    private int[][][] polygonY = {
-            {
-                    {0, 25, 30, 20},
-                    {15, 30, 10, 0},
-                    {15, 30, 0}
-            },
-            {
-                    {0, 0, 60, 80, 50},
-                    {50, 30, 0, 40, 80},
-                    {45, 15, 0, 40, 80}
-            },
-            {
-                    {0, 35, 170, 200, 160, 30},
-                    {150, 40, 0, 130, 200, 180, 200},
-                    {120, 60, 0, 20, 200}
-            }
-    };
-    private Polygon body;
-    private boolean exists;
+	private static int count = 0;  // to count active asteroids
+	private double x, y, vx, vy, rotation, rotationVel;  // asteroid state of motion
+	private int size, rectSize, hp;
+	private int sizes[] = {30, 80, 200}, hpSizes[] = {3, 10, 30};  // to assign asteroid properties on init
+	private int bodyType;
 
-    // Constructor //
+	// Polygon points
+	private int[][][] polygonX = {
+		{
+			{10, 30, 25, 0},
+			{15, 30, 10, 0},
+			{15, 30, 0}
+		},
+		{
+			{40, 55, 80, 35, 0},
+			{0, 0, 65, 80, 45},
+			{0, 15, 50, 80, 25}
+		},
+		{
+			{65, 200, 170, 80, 0, 0},
+			{0, 0, 160, 200, 175, 120, 40},
+			{0, 0, 70, 200, 170}
+		}
+	};
+	private int[][][] polygonY = {
+		{
+			{0, 25, 30, 20},
+			{15, 30, 10, 0},
+			{15, 30, 0}
+		},
+		{
+			{0, 0, 60, 80, 50},
+			{50, 30, 0, 40, 80},
+			{45, 15, 0, 40, 80}
+		},
+		{
+			{0, 35, 170, 200, 160, 30},
+			{150, 40, 0, 130, 200, 180, 200},
+			{120, 60, 0, 20, 200}
+		}
+	};
+	private Polygon body;
+	private boolean exists;
 
-    public Asteroid(int size, double x, double y, double xVel, double yVel, double rotationVel) {
+	// Constructor //
 
-        /* Constructs and returns a new Asteroid object. */
+	public Asteroid(int size, double x, double y, double vx, double vy, double rotationVel) {
 
-        this.size = size;
-        this.x = x; this.y = y;
-        this.xVel = xVel;
-        this.yVel = yVel;
-        this.rotationVel = rotationVel;
-        this.rectSize = sizes[size];
-        this.hp = hpSizes[size];
-        this.exists = true;
-        this.bodyType = rand.nextInt(3);
-        this.makeShape();
+		/* Constructs and returns a new Asteroid object. */
 
-    }
+		this.size = size;
+		this.x = x;
+		this.y = y;
+		this.vx = vx;
+		this.vy = vy;
+		this.rotationVel = rotationVel;
+		this.rectSize = sizes[size];
+		this.hp = hpSizes[size];
+		this.exists = true;
+		this.bodyType = (new Random()).nextInt(3);
+		this.makeShape();
 
-    /* Constructs a Polygon for the Asteroid. */
+	}
 
-    private void makeShape() {
-        int pointCount = polygonX[this.size][bodyType].length;
-        int[] xCoords = new int[pointCount];
-        int[] yCoords = new int[pointCount];
-        for (int i = 0; i < pointCount; i++) {
-            xCoords[i] = (int) (this.x + polygonX[this.size][this.bodyType][i]);
-            yCoords[i] = (int) (this.y + polygonY[this.size][this.bodyType][i]);
-        }
-        double centerX = this.rectSize/2, centerY = this.rectSize/2;
-        for (int i = 0; i < pointCount; i++){
-            double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
-            double ang = this.rotation + Math.acos((xCoords[i] - centerX));
-            double newX = dist*(Math.cos(ang)) + centerX;
-            double newY = dist*(Math.sin(ang)) + centerY;
-            xCoords[i] = (int)newX;
-            yCoords[i] = (int)newY;
-        }
-        this.body = new Polygon(xCoords, yCoords, pointCount);
+	private void makeShape() {
 
-    }
+		/* Constructs a Polygon for the Asteroid. */
 
-    public Asteroid[] shatter(){
+		int pointCount = polygonX[this.size][bodyType].length;
+		int[] xCoords = new int[pointCount];
+		int[] yCoords = new int[pointCount];
 
-        /* Sets the existence of the current Asteroid to false and returns 3 new smaller asteroids in an array. */
+		for (int i = 0; i < pointCount; i++) {
+			xCoords[i] = (int) (this.x + polygonX[this.size][this.bodyType][i]);
+			yCoords[i] = (int) (this.y + polygonY[this.size][this.bodyType][i]);
+		}
 
-        this.exists = false;
+		double centerX = this.rectSize / 2, centerY = this.rectSize / 2;
+		for (int i = 0; i < pointCount; i++) {
+			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
+			double ang = this.rotation + Math.acos((xCoords[i] - centerX));
+			double newX = dist * (Math.cos(ang)) + centerX;
+			double newY = dist * (Math.sin(ang)) + centerY;
+			xCoords[i] = (int) newX;
+			yCoords[i] = (int) newY;
+		}
 
-        if(size > 0) {
-            return new Asteroid[] {
-                new Asteroid(this.size - 1, this.x, this.y, xVel - 1, yVel - 1, rotation + Math.random() * 2 - 1),
-                new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, xVel + 1, yVel - 1, rotation + Math.random() * 2 - 1),
-                new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, xVel + 1, yVel + 1, rotation + Math.random() * 2 - 1)
-            };
-        }
-        else return new Asteroid[] {};  // asteroid is broken, no new ones to return
-    }
+		this.body = new Polygon(xCoords, yCoords, pointCount);
+	}
 
+	public Asteroid[] shatter() {
 
-    public void move(){
+		/* Sets the existence of the current Asteroid to false and returns 3 new smaller asteroids in an array. */
 
-        /* Moves asteroid depending on velocity. */
+		if (size > 0) {
+			return new Asteroid[]{
+				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, rotation + Math.random() * 2 - 1),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, rotation + Math.random() * 2 - 1),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, rotation + Math.random() * 2 - 1)
+			};
+		} else return new Asteroid[]{};  // asteroid is broken, no new ones to return
+	}
 
-        this.x += this.xVel;
-        this.y += this.yVel;
-        this.makeShape();
-    }
+	public void move() {
 
-    public void takeDmg(int damage){
+		/* Moves asteroid depending on velocity. */
 
-        /* Reduces Asteroid health by a given amount. */
+		this.x += this.vx;
+		this.y += this.vy;
+		this.makeShape();
+	}
 
-        this.hp -= damage;
-    }
+	public void takeDmg(int damage) {
 
-    public Polygon getShape(){
-        return this.body;
-    }
+		/* Reduces Asteroid health by a given amount. */
 
-    public double getvx(){
-        return this.xVel;
-    }
+		this.hp -= damage;
+	}
 
-    public double getvy(){
-        return this.yVel;
-    }
+	public int getHp() {
 
-    public int getSize(){
-        return this.size;
-    }
+		/* Returns Asteroid health. */
 
-    public void setvx(double vx){
-        this.xVel = vx;
-    }
+		return this.hp;
+	}
 
-    public void setvy(double vy){
-        this.yVel = vy;
-    }
+	public Polygon getShape() {
 
+		/* Returns the body of the Asteroid. */
 
-    /* Display asteroid to screen */
+		return this.body;
+	}
 
-    public void update(Graphics comp) {
+	public double getVX() {
 
-        /* Draws the Asteroid onto a given Graphics component. */
+		/* Returns the x-velocity of the Asteroid. */
 
-    }
+		return this.vx;
+	}
+
+	public void setVX(double vx) {
+
+		/* Sets the x-velocity of the Asteroid to a given value. */
+
+		this.vx = vx;
+	}
+
+	public double getVY() {
+
+		/* Returns the y-velocity of the Asteroid. */
+
+		return this.vy;
+	}
+
+	public void setVY(double vy) {
+
+		/* Sets the y-velocity of the Asteroid to a given value. */
+
+		this.vy = vy;
+	}
+
+	public int getSize() {
+
+		/* Returns the size of the Asteroid. */
+
+		return this.size;
+	}
+
+	public boolean exists() {
+
+		/* Returns whether the Asteroid exists or not. */
+
+		return this.exists;
+	}
+
+	public void setExists(boolean exists) {
+
+		/* Sets the existence of the Asteroid. */
+
+		this.exists = exists;
+		if (!exists) count--;
+	}
+
+	public void update(Graphics g) {
+
+		/* Draws the Asteroid onto a given Graphics component. */
+
+	}
 }
-
-
 
 class Ship {
 
-    /* Used to make Ships, the PC bodies that can do stuff. */
+	/* Used to make Ships, the PC bodies that can do stuff. */
 
-    // Fields //
+	// Fields //
 
-    private static int count = 0;  // to count active Ships
-    private static int maxCount = 2;  // max active Ships
-    // Controls
-    private static int controls[][] = {
-        { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_SPACE},
-        { KeyEvent.VK_W,  KeyEvent.VK_D,     KeyEvent.VK_S,    KeyEvent.VK_A,    KeyEvent.VK_R}
-    };
-    // Name vars for direction
-    private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
-    private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
-    private int ID;  // ID used for identification
-    private int ammo, attackRate, shootingCooldown;
-    private boolean isAccelerating;
-    private Polygon body;
-    int[] polygonX = {30, 60, 0};
-    int[] polygonY = {0, 100, 100};
-    private Image[] imgs;
-    private final int width = 50, height = 50;
-    private boolean exists = true;
-
-
-    public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
-
-        /* Constructs and returns a new Ship object. */
-
-        this.ID = count ++;
-        this.x = x; this.y = y;
-        this.accel = accel;
-        this.drag = drag;
-        this.turnSpeed = turnSpeed;
-        this.ammo = ammo;
-        this.makeShape();
-
-    }
-
-    private void makeShape() {
-        int pointCount = 3;
-        int[] xCoords = new int[pointCount];
-        int[] yCoords = new int[pointCount];
-        for (int i = 0; i < pointCount; i++) {
-            xCoords[i] = (int) (this.x + polygonX[i]);
-            yCoords[i] = (int) (this.y + polygonY[i]);
-        }
-        double centerX = this.width/2, centerY = this.height/2;
-        for (int i = 0; i < pointCount; i++){
-            double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
-            double ang = this.angle + Math.acos((xCoords[i] - centerX));
-            double newX = dist*(Math.cos(ang)) + centerX;
-            double newY = dist*(Math.sin(ang)) + centerY;
-            xCoords[i] = (int)newX;
-            yCoords[i] = (int)newY;
-        }
-
-        this.body = new Polygon(xCoords, yCoords, pointCount);
-
-    }
-
-    public static int getCount() {
-        return count;
-    }
-
-    public void accelerate(boolean[] keys) {
-
-        /* Moves the Ship considering the currently pressed keys. */
-
-        isAccelerating = false;
-        if (keys[controls[this.ID][FORWARD]]) {  // moving forward
-            this.vx += this.accel * Math.cos(this.angle);
-            this.vy += this.accel * Math.sin(this.angle);
-            isAccelerating = true;
-        } if (keys[controls[this.ID][RIGHT]]) {  // turning right
-            this.angle -= this.turnSpeed;
-        } if (keys[controls[this.ID][LEFT]]) {  // turning left
-            this.angle += this.turnSpeed;
-        }
-
-        // Slowing ship down by a factor gives ship a max speed
-        this.vx *= this.drag;
-        this.vy *= this.drag;
-
-    }
-
-    public void move() {
-        // must factor in wall and boundary collisions
-        this.x += this.vx;
-        this.y += this.vy;
-        this.makeShape();
-
-    }
-
-    public ArrayList<String> queryAction(boolean[] keys) {
-
-        ArrayList<String> actions = new ArrayList<>();
-
-        if (keys[controls[this.ID][SHOOT]] && this.shootingCooldown < 0) {
-            actions.add("fire");
-        }
-
-        return actions;
-    }
-
-    public Bullet fire() {
-        return new Bullet(this.x, this.y, this.angle, 4, 3);
-    }
-
-    public void update(Graphics comp) {
-
-        /* Draws the Ship onto a given Graphics component. */
-
-        // magic happens here
-    }
-
-    public Polygon getShape(){
-        return this.body;
-    }
-
-    public double getvx(){
-        return this.vx;
-    }
-
-    public double getvy(){
-        return this.vy;
-    }
-
-    public void setvx(double vx){
-        this.vx = vx;
-    }
-
-    public void setvy(double vy){
-        this.vy = vy;
-    }
-
-    public void setExists(boolean exists){
-        this.exists = exists;
-    }
-
-    public class Bullet {
+	private static int count = 0;  // to count active Ships
+	private static int maxCount = 2;  // max active Ships
+	// Controls
+	private static int controls[][] = {
+		{KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_SPACE},
+		{KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_R}
+	};
+	// Name vars for direction
+	private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
+	private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
+	private int ID;  // ID used for identification
+	private int ammo, attackRate, shootingCooldown;
+	private boolean isAccelerating;
+	private Polygon body;
+	private int[] polygonX = {30, 60, 0};
+	private int[] polygonY = {0, 100, 100};
+	private Image[] imgs;
+	private final int width = 50, height = 50;
+	private boolean exists;
 
 
-        /* Template for Bullet objects, the primary offensive projectile of the game. */
+	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
 
-        // Fields //
+		/* Constructs and returns a new Ship object. */
 
-        private double x, y, angle, speed;
-        private boolean exists;
-        private Rectangle body;
-        private int radius = 30;
-        private int damage;
+		this.ID = count++;
+		this.x = x;
+		this.y = y;
+		this.accel = accel;
+		this.drag = drag;
+		this.turnSpeed = turnSpeed;
+		this.ammo = ammo;
+		this.exists = true;
+		this.makeShape();
+	}
 
-        // Constructor //
+	public static int getCount() {
 
-        private Bullet(double x, double y, double angle, double speed, int damage) {
+		/* Returns the number of active Ships. */
 
-            /* Constructs and returns a new Bullet object. */
+		return count;
+	}
 
-            this.x = x; this.y = y;
-            this.angle = angle;
-            this.speed = speed;
-            this.exists = true;
-            this.makeShape();
+	private void makeShape() {
 
-        }
+		/* Constructs a Polygon for the Ship. */
 
-        public void makeShape(){
-            this.body = new Rectangle((int)this.x - this.radius, (int)this.y - this.radius, this.radius*2, this.radius*2);
-        }
+		int pointCount = 3;
+		int[] xCoords = new int[pointCount];
+		int[] yCoords = new int[pointCount];
 
-        public void move() {
+		for (int i = 0; i < pointCount; i++) {
+			xCoords[i] = (int) (this.x + polygonX[i]);
+			yCoords[i] = (int) (this.y + polygonY[i]);
+		}
 
-            /* Moves the Bullet. */
+		double centerX = this.width / 2, centerY = this.height / 2;
+		for (int i = 0; i < pointCount; i++) {
+			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
+			double ang = this.angle + Math.acos((xCoords[i] - centerX));
+			double newX = dist * (Math.cos(ang)) + centerX;
+			double newY = dist * (Math.sin(ang)) + centerY;
+			xCoords[i] = (int) newX;
+			yCoords[i] = (int) newY;
+		}
 
-            this.x += this.speed * Math.cos(this.angle);
-            this.y += this.speed * Math.sin(this.angle);
-        }
+		this.body = new Polygon(xCoords, yCoords, pointCount);
+	}
+
+	public Polygon getShape() {
+
+		/* Returns the Polygon of the Ship. */
+
+		return this.body;
+	}
+
+	public void accelerate(boolean[] keys) {
+
+		/* Moves the Ship considering the currently pressed keys. */
+
+		isAccelerating = false;
+		if (keys[controls[this.ID][FORWARD]]) {  // moving forward
+			this.vx += this.accel * Math.cos(this.angle);
+			this.vy += this.accel * Math.sin(this.angle);
+			isAccelerating = true;
+		}
+		if (keys[controls[this.ID][RIGHT]]) {  // turning right
+			this.angle -= this.turnSpeed;
+		}
+		if (keys[controls[this.ID][LEFT]]) {  // turning left
+			this.angle += this.turnSpeed;
+		}
+
+		// Slowing ship down by a factor gives ship a max speed
+		this.vx *= this.drag;
+		this.vy *= this.drag;
+
+	}
+
+	public void move() {
+
+		/* Moves the Ship. */
+
+		this.x += this.vx;
+		this.y += this.vy;
+		this.makeShape();
+	}
+
+	public Bullet fire() {
+
+		/* Returns a new Bullet. */
+
+		return new Bullet(this.x, this.y, this.angle, 4, 3);
+	}
+
+	public double getVX() {
+
+		/* Returns the x-velocity of the Ship. */
+
+		return this.vx;
+	}
+
+	public void setVX(double vx) {
+
+		/* Sets the x-velocity of the Ship to a given value. */
+
+		this.vx = vx;
+	}
+
+	public double getVY() {
+
+		/* Returns the y-velocity of the Ship. */
+
+		return this.vy;
+	}
+
+	public void setVY(double vy) {
+
+		/* Sets the y-velocity of the Ship to a given value. */
+
+		this.vy = vy;
+	}
+
+	public boolean exists() {
+
+		/* Returns whether the Ship exists or not. */
+
+		return this.exists;
+	}
+
+	public void setExists(boolean exists) {
+
+		/* Sets the existence of the Ship. */
+
+		this.exists = exists;
+		if (!exists) count--;
+	}
+
+	public void update(Graphics g) {
+
+		/* Draws the Ship onto a given Graphics component. */
+
+		// magic happens here
+	}
+
+	public class Bullet {
 
 
-        public Rectangle getShape(){
-            return this.body;
-        }
 
-        public int getDamage(){
-            return this.damage;
-        }
+		/* Template for Bullet objects, the primary offensive projectile of the game. */
 
-        public double getvx(){
-            return this.speed * Math.cos(this.angle);
-        }
+		// Fields //
 
-        public double getvy(){
-            return this.speed * Math.sin(this.angle);
-        }
+		private double x, y, angle, speed;
+		private boolean exists;
+		private Rectangle hitbox;
+		private int radius = 30;
+		private int damage;
 
-        public void setExists(boolean exists){
-            this.exists = exists;
-        }
+		// Constructor //
 
-        /* Displays bullet to screen */
+		private Bullet(double x, double y, double angle, double speed, int damage) {
 
-        public void update(Graphics screen){
+			/* Constructs and returns a new Bullet object. */
 
-        }
-    }
+			this.x = x;
+			this.y = y;
+			this.angle = angle;
+			this.speed = speed;
+			this.exists = true;
+			this.makeShape();
+
+		}
+
+		public void makeShape() {
+			this.hitbox = new Rectangle((int) this.x - this.radius, (int) this.y - this.radius, this.radius * 2, this.radius * 2);
+		}
+
+		public void move() {
+
+			/* Moves the Bullet. */
+
+			this.x += this.speed * Math.cos(this.angle);
+			this.y += this.speed * Math.sin(this.angle);
+		}
 
 
-    private class PowerUp {
-        private PowerUp() {
+		public Rectangle getShape() {
 
-        }
+			/* Returns the Bullet hitbox. */
 
-    }
+			return this.hitbox;
+		}
 
+		public int getDamage() {
+
+			/* Returns the Bullet's damage potential. */
+
+			return this.damage;
+		}
+
+		public double getVX() {
+
+			/* Returns the x-velocity of the Bullet. */
+
+			return this.speed * Math.cos(this.angle);
+		}
+
+		public double getVY() {
+
+			/* Returns the y-velocity of the Bullet. */
+
+			return this.speed * Math.sin(this.angle);
+		}
+
+		public void setExists(boolean exists) {
+			this.exists = exists;
+		}
+
+
+		public void update(Graphics g) {
+
+			/* Draws The Bullet onto a Graphics component.*/
+
+		}
+	}
 }
 
 
 class Space {
 
-    /* Used for managing the rest of the active game objects. */
+	/* Used for managing the rest of the active game objects. */
 
-    private ArrayList<Ship> ships = new ArrayList<>();
-    private ArrayList<Asteroid> asteroids = new ArrayList<>();
-    private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
-    private ArrayList<Space.Wall> walls = new ArrayList<>();
+	private ArrayList<Ship> ships = new ArrayList<>();
+	private ArrayList<Asteroid> asteroids = new ArrayList<>();
+	private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
+	private ArrayList<Space.Wall> walls = new ArrayList<>();
 
-    private SpacePanel screen;
+	private SpacePanel screen;
 
-    public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
+	public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
 
-        /* Constructs and returns a new Space object. */
+		/* Constructs and returns a new Space object. */
 
-    }
+	}
 
-    public void addAsteroid(Asteroid a) {
+	public void addAsteroid(Asteroid a) {
 
-        /* Adds a Asteroid to the Space. */
+		/* Adds a Asteroid to the Space. */
 
-        asteroids.add(a);
-    }
+		asteroids.add(a);
+	}
 
-    public void addShip(Ship s) {
+	public void addShip(Ship s) {
 
-        /* Adds a Ship to the Space. */
+		/* Adds a Ship to the Space. */
 
-        ships.add(s);
-    }
+		ships.add(s);
+	}
 
-    public void update(Graphics screen, boolean[] keys){
+	public void queryCollisions() {
 
-        /* Checking for collisions between pairs of objects */
+		/* Checking for collisions between pairs of objects. */
 
-        //Asteroids colliding
-        for(int i = 0; i < asteroids.size(); i++){
-            for(int j = 0; j < i; j++){
-                if(Space.Physics.collide(asteroids.get(i).getShape(), asteroids.get(j).getShape())){
-                    Space.Physics.colliding(asteroids.get(i), asteroids.get(j));
-                }
-            }
-        }
+		// Asteroids colliding
+		for (int i = 0; i < asteroids.size(); i++) {
+			for (int j = 0; j < i; j++) {
+				if (Physics.collide(asteroids.get(i).getShape(), asteroids.get(j).getShape())) {
+					Physics.colliding(asteroids.get(i), asteroids.get(j));
+				}
+			}
+		}
 
-        //Asteroids with ship
-        for(int i = 0; i < asteroids.size(); i++){
-            for(int j = 0; j < ships.size(); j++){
-                if(Space.Physics.collide(asteroids.get(i).getShape(), ships.get(j).getShape())){
-                    Space.Physics.colliding(ships.get(j), asteroids.get(i));
-                }
-            }
-        }
+		// Asteroids with ship
+		for (Asteroid asteroid : asteroids) {
+			for (Ship ship : ships) {
+				if (Physics.collide(asteroid.getShape(), ship.getShape())) {
+					Physics.colliding(ship, asteroid);
+				}
+			}
+		}
 
-        //Asteroids with bullets
-        for(int i = 0; i < asteroids.size(); i++){
-            for(int j = 0; j < bullets.size(); j++){
-                if(Space.Physics.collide(asteroids.get(i).getShape(), bullets.get(j).getShape())){
-                    Space.Physics.colliding(bullets.get(j), asteroids.get(i));
-                }
-            }
-        }
+		// Asteroids with bullets
+		for (Asteroid asteroid : asteroids) {
+			for (Ship.Bullet bullet : bullets) {
+				if (Physics.collide(asteroid.getShape(), bullet.getShape())) {
+					Physics.colliding(bullet, asteroid);
+				}
+			}
+		}
 
-        //Asteroids with wall
-        for(int i = 0; i < asteroids.size(); i++){
-            for(int j = 0; j < walls.size(); j++){
-                if(Space.Physics.collide(asteroids.get(i).getShape(), walls.get(j).getShape())){
-                    Space.Physics.colliding(asteroids.get(j), walls.get(i));
-                }
-            }
-        }
+		// Asteroids with wall
+		for (Asteroid asteroid : asteroids) {
+			for (Wall wall : walls) {
+				if (Physics.collide(asteroid.getShape(), wall.getShape())) {
+					Physics.colliding(asteroid, wall);
+				}
+			}
+		}
 
-        //Ship with wall
-        for(int i = 0; i < ships.size(); i++){
-            for(int j = 0; j < walls.size(); j++){
-                if(Space.Physics.collide(ships.get(i).getShape(), walls.get(j).getShape())){
-                    Space.Physics.colliding(ships.get(j), walls.get(i));
-                }
-            }
-        }
+		// Ship with wall
+		for (Ship ship : ships) {
+			for (Wall wall : walls) {
+				if (Physics.collide(ship.getShape(), wall.getShape())) {
+					Physics.colliding(ship, wall);
+				}
+			}
+		}
 
-        //Bullet with wall
-        for(int i = 0; i < bullets.size(); i++){
-            for(int j = 0; j < walls.size(); j++){
-                if(Space.Physics.collide(bullets.get(i).getShape(), walls.get(j).getShape())){
-                    Space.Physics.colliding(bullets.get(j), walls.get(i));
-                }
-            }
-        }
+		//Bullet with wall
+		for (Ship.Bullet bullet : bullets) {
+			for (Wall wall : walls) {
+				if (Physics.collide(bullet.getShape(), wall.getShape())) {
+					Physics.colliding(bullet, wall);
+				}
+			}
+		}
+	}
 
+	public void playerAction(boolean[] keys) {
+		for (Ship ship : ships) {
+			ship.accelerate(keys);
+			ship.move();
+		}
+	}
 
-        for(Ship ship : ships){
-            ship.accelerate(keys);
-            ship.move();
-            ArrayList<String> actions = ship.queryAction(keys);
-            ship.update(screen);
-        }
-        for(Asteroid asteroid : asteroids){
+	public void filterExistingObjects() {
 
-            asteroid.update(screen);
-        }
-        for(Ship.Bullet bullet : bullets){
+	}
 
-            bullet.update(screen);
-        }
+	public void update(Graphics g) {
+		for (Ship ship : ships) ship.update(g);
+		for (Asteroid asteroid : asteroids) asteroid.update(g);
+		for (Ship.Bullet bullet : bullets) bullet.update(g);
+	}
 
-        // Checking for objects that must be removed
-        for(int i = asteroids.size(); i > 0; i--){
-            asteroids.get(i).shatter();
-        }
-
-    }
-
-    private static class Physics {
-
-        /* Checks if ship collided with an asteroid */
-
-        public static boolean collide(Shape a, Shape b) {
-            Area areaA = new Area(a);
-            areaA.intersect(new Area(b));
-            return !areaA.isEmpty();
-        }
-
-        public static void colliding(Asteroid asteroidA, Asteroid asteroidB){
-            double newAvx = asteroidA.getvx() + asteroidB.getvx()*asteroidA.getSize()/asteroidB.getSize();
-            double newAvy = asteroidA.getvy() + asteroidB.getvy()*asteroidA.getSize()/asteroidB.getSize();
-            double newBvx = asteroidB.getvx() + asteroidA.getvx()*asteroidB.getSize()/asteroidA.getSize();
-            double newBvy = asteroidB.getvy() + asteroidA.getvy()*asteroidB.getSize()/asteroidA.getSize();
-            asteroidA.setvx(newAvx);
-            asteroidA.setvy(newAvy);
-            asteroidB.setvx(newBvx);
-            asteroidB.setvy(newBvy);
-        }
-
-        public static void colliding(Ship ship, Asteroid asteroid){
-            ship.setExists(false);
-        }
-
-        //Asteroid gets damaged
-        public static void colliding(Ship.Bullet bullet, Asteroid asteroid){
-            bullet.setExists(false);
-            asteroid.takeDmg(bullet.getDamage());
-            asteroid.setvx(asteroid.getvx() + bullet.getvx()/(5*asteroid.getSize()));
-            asteroid.setvy(asteroid.getvy() + bullet.getvy()/(5*asteroid.getSize()));
-        }
-
-        //Asteroid bounces off of wall
-        public static void colliding(Asteroid asteroid, Space.Wall wall){
-            if(wall.getWidth() > wall.getHeight()){ //Checks if wall is vertical or horizontal
-                asteroid.setvy(-asteroid.getvy());
-            }
-            else{
-                asteroid.setvx(-asteroid.getvx());
-            }
-        }
-
-        //Ship bounces off of wall
-        public static void colliding(Ship ship, Space.Wall wall){
-            if(wall.getWidth() > wall.getHeight()){ //Checks if wall is vertical or horizontal
-                ship.setvy(-ship.getvy());
-            }
-            else{
-                ship.setvx(-ship.getvx());
-            }
-        }
-
-        //Kills the bullet
-        public static void colliding(Ship.Bullet bullet, Space.Wall wall){
-            bullet.setExists(false);
-        }
-
-    }
-
-    // will add some new update methods later
-
-    private class Wall {
-
-    /* Used to make Wall objects, impervious barriers with some special effects. */
+	private static class Physics {
 
 
-        private int x, y, width, height;
-        private Rectangle rect;
+		/* Checks if ship collided with an asteroid */
+
+		public static boolean collide(Shape a, Shape b) {
+			Area areaA = new Area(a);
+			areaA.intersect(new Area(b));
+			return !areaA.isEmpty();
+		}
+
+		public static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
+			double newAvx = asteroidA.getVX() + asteroidB.getVX() * asteroidA.getSize() / asteroidB.getSize();
+			double newAvy = asteroidA.getVY() + asteroidB.getVY() * asteroidA.getSize() / asteroidB.getSize();
+			double newBvx = asteroidB.getVX() + asteroidA.getVX() * asteroidB.getSize() / asteroidA.getSize();
+			double newBvy = asteroidB.getVY() + asteroidA.getVY() * asteroidB.getSize() / asteroidA.getSize();
+			asteroidA.setVX(newAvx);
+			asteroidA.setVY(newAvy);
+			asteroidB.setVX(newBvx);
+			asteroidB.setVY(newBvy);
+		}
+
+		public static void colliding(Ship ship, Asteroid asteroid) {
+			ship.setExists(false);
+		}
+
+		//Asteroid gets damaged
+		public static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
+			bullet.setExists(false);
+			asteroid.takeDmg(bullet.getDamage());
+			asteroid.setVX(asteroid.getVX() + bullet.getVX() / (5 * asteroid.getSize()));
+			asteroid.setVY(asteroid.getVY() + bullet.getVY() / (5 * asteroid.getSize()));
+		}
+
+		//Asteroid bounces off of wall
+		public static void colliding(Asteroid asteroid, Space.Wall wall) {
+			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
+				asteroid.setVY(-asteroid.getVY());
+			} else {
+				asteroid.setVX(-asteroid.getVX());
+			}
+		}
+
+		//Ship bounces off of wall
+		public static void colliding(Ship ship, Space.Wall wall) {
+			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
+				ship.setVY(-ship.getVY());
+			} else {
+				ship.setVX(-ship.getVX());
+			}
+		}
+
+		//Kills the bullet
+		public static void colliding(Ship.Bullet bullet, Space.Wall wall) {
+			bullet.setExists(false);
+		}
+
+	}
+
+	// will add some new update methods later
+
+	private class Wall {
+
+		/* Used to make Wall objects, impervious barriers with some special effects. */
 
 
-        public Wall(int x, int y, int width, int height) {
+		private int x, y, width, height;
+		private Rectangle rect;
 
-        /* Constructs and returns a new Wall object. */
 
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.rect = new Rectangle(this.x, this.y, this.width, this.height);
+		public Wall(int x, int y, int width, int height) {
 
-        }
+			/* Constructs and returns a new Wall object. */
 
-        public Rectangle getShape(){
-            return this.rect;
-        }
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.rect = new Rectangle(this.x, this.y, this.width, this.height);
 
-        public int getWidth(){
-            return this.width;
-        }
+		}
 
-        public int getHeight(){
-            return this.height;
-        }
+		public Rectangle getShape() {
+			return this.rect;
+		}
 
-    }
+		public int getWidth() {
+			return this.width;
+		}
 
-    class SpacePanel extends JPanel implements KeyListener {
+		public int getHeight() {
+			return this.height;
+		}
 
-    	private boolean[] keys;
-    	private ImageIcon background;
+	}
 
-    	public SpacePanel() {
+	class SpacePanel extends JPanel implements ActionListener, KeyListener {
+
+		public Timer timer;
+		private boolean[] keys;
+		private ImageIcon background;
+
+		public SpacePanel() {
 			keys = new boolean[KeyEvent.KEY_LAST + 1];
 			this.addKeyListener(this);
 			this.setLayout(null);
+
+			timer = new Timer(10, this);
+			timer.start();
 		}
 
 		public boolean getKeyPress(int keycode) {
-    		return keys[keycode];
+			return keys[keycode];
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Object src = e.getSource();
+
+			if (src == timer) {
+				repaint();
+			}
 		}
 
 		@Override
@@ -645,10 +721,7 @@ class Space {
 			super.paintComponent(g);
 
 			g.drawImage(background.getImage(), 0, 0, this);
-
-			for (Ship ship : ships) ship.update(g);
-			for (Ship.Bullet bullet : bullets) bullet.update(g);
-			for (Asteroid asteroid : asteroids) asteroid.update(g);
+			Space.this.update(g);
 		}
 	}
 }
