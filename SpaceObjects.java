@@ -13,6 +13,8 @@
     - > Wall        A Space component that involves barriers and interesting physics
 */
 
+import javafx.scene.shape.Circle;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -269,7 +271,7 @@ class Ship {
 
         private double x, y, angle, speed;
         private boolean exists;
-        private Rectangle hitbox;
+        private Rectangle body;
         private int radius = 30;
 
         // Constructor //
@@ -287,7 +289,8 @@ class Ship {
         }
 
         public void makeShape(){
-            this.hitbox = new Rectangle((int) this.x - 15, (int) this.y - 15, this.radius, this.radius);
+
+            this.body = new Rectangle((int)this.x - this.radius, (int)this.y - this.radius, this.radius*2, this.radius*2);
         }
 
         public void move() {
@@ -299,7 +302,7 @@ class Ship {
         }
 
         public Rectangle getShape(){
-            return this.hitbox;
+            return this.body;
         }
 
 
