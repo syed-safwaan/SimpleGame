@@ -80,7 +80,7 @@ class Asteroid {
         this.x = x; this.y = y;
         this.xVel = xVel;
         this.yVel = yVel;
-        this.rotationVel = rotation;
+        this.rotationVel = rotationVel;
         this.rectSize = sizes[size];
         this.hp = hpSizes[size];
         this.exists = true;
@@ -98,6 +98,15 @@ class Asteroid {
         for (int i = 0; i < pointCount; i++) {
             xCoords[i] = (int) (this.x + polygonX[this.size][this.bodyType][i]);
             yCoords[i] = (int) (this.y + polygonY[this.size][this.bodyType][i]);
+        }
+        double centerX = this.rectSize/2, centerY = this.rectSize/2;
+        for (int i = 0; i < pointCount; i++){
+            double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
+            double ang = this.rotation + Math.acos((xCoords[i] - centerX));
+            double newX = dist*(Math.cos(ang)) + centerX;
+            double newY = dist*(Math.sin(ang)) + centerY;
+            xCoords[i] = (int)newX;
+            yCoords[i] = (int)newY;
         }
         this.body = new Polygon(xCoords, yCoords, pointCount);
 
@@ -221,6 +230,16 @@ class Ship {
             xCoords[i] = (int) (this.x + polygonX[i]);
             yCoords[i] = (int) (this.y + polygonY[i]);
         }
+        double centerX = this.width/2, centerY = this.height/2;
+        for (int i = 0; i < pointCount; i++){
+            double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
+            double ang = this.angle + Math.acos((xCoords[i] - centerX));
+            double newX = dist*(Math.cos(ang)) + centerX;
+            double newY = dist*(Math.sin(ang)) + centerY;
+            xCoords[i] = (int)newX;
+            yCoords[i] = (int)newY;
+        }
+
         this.body = new Polygon(xCoords, yCoords, pointCount);
 
     }
