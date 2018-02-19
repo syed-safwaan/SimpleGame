@@ -141,6 +141,15 @@ class Asteroid {
     }
 
 
+    public void setvx(double vx){
+        this.xVel = vx;
+    }
+
+    public void setvy(double vy){
+        this.yVel = vy;
+    }
+
+
     /* Display asteroid to screen */
 
     public void update(Graphics comp) {
@@ -261,6 +270,13 @@ class Ship {
         return this.body;
     }
 
+    public void setvx(double vx){
+        this.vx = vx;
+    }
+
+    public void setvy(double vy){
+        this.vy = vy;
+    }
 
     public class Bullet {
 
