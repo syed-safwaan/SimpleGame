@@ -7,10 +7,10 @@
     - SpaceObjects  To manage the other objects (maybe)
     - Asteroid      The "enemies" of the game
     - Ship          The playable objects
-    - > Bullet        The Ship's main weapon
-    - > PowerUp       For augmenting the Ship's abilities
+    - > Bullet      The Ship's main weapon
+    - > PowerUp     For augmenting the Ship's abilities
     - Space         The playground of the other objects
-    - > Wall    A Space component that involves barriers and interesting physics
+    - > Wall        A Space component that involves barriers and interesting physics
 */
 
 import java.awt.*;
