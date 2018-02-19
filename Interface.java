@@ -21,6 +21,11 @@ class GameButton extends JButton {
     	this.setSize(dimensions);
     	this.setLocation(pos);
 
+    	this.setBorderPainted(false);
+    	this.setBorder(null);
+    	this.setMargin(new Insets(0, 0, 0, 0));
+    	this.setContentAreaFilled(false);
+
     	this.setIcon(idleImg);
     	this.setRolloverIcon(hoverImg);
     	this.setPressedIcon(hoverImg);
@@ -57,20 +62,21 @@ class GameButton extends JButton {
 
 class Menu extends JPanel {
 
-	private ImageIcon background;
+//	private ImageIcon background;
 	private GameButton[] buttons;
-	private ImageIcon[] images;
-	private Point[] imgPoses;
+//	private ImageIcon[] images;
+//	private Point[] imgPoses;
 	private String name;
 
-	public Menu(ImageIcon background, GameButton[] buttons, ImageIcon[] images, Point[] imgPoses, String name) {
+	public Menu(/*ImageIcon background,*/ GameButton[] buttons, /*ImageIcon[] images, Point[] imgPoses,*/ String name) {
 
-		this.background = background;
-		this.buttons = buttons;
-		this.images = images;
-		this.imgPoses = imgPoses;
+//		this.background = background;
+//		this.buttons = buttons;
+//		this.images = images;
+//		this.imgPoses = imgPoses;
 		this.name = name;
 
+		this.setLayout(null);
 		for (GameButton button : buttons) this.add(button);
 	}
 
@@ -82,11 +88,11 @@ class Menu extends JPanel {
 		return this.name;
 	}
 
-	@Override
-	public void paintComponent(Graphics g) {
-		g.drawImage(this.background.getImage(), 0, 0, this);
-		for (int i = 0; i < images.length; i ++) {
-			g.drawImage(this.images[i].getImage(), (int) imgPoses[i].getX(), (int) imgPoses[i].getY(), this);
-		}
-	}
+//	@Override
+//	public void paintComponent(Graphics g) {
+//		g.drawImage(this.background.getImage(), 0, 0, this);
+//		for (int i = 0; i < images.length; i ++) {
+//			g.drawImage(this.images[i].getImage(), (int) imgPoses[i].getX(), (int) imgPoses[i].getY(), this);
+//		}
+//	}
 }
