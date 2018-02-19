@@ -92,27 +92,6 @@ class Asteroid {
 		weight += (int)Math.pow(3, size);
 	}
 
-	public static int getWeight() {
-
-		/* Returns the current weight of all Asteroids. */
-
-		return weight;
-	}
-
-	public static int getMaxWeight() {
-
-		/* Returns the weight limit. */
-
-		return maxWeight;
-	}
-
-	public static void setMaxWeight(int max) {
-
-		/* Sets the weight limit. */
-
-		maxWeight = max;
-	}
-
 	private void makeShape() {
 
 		/* Constructs a Polygon for the Asteroid. */
@@ -139,17 +118,27 @@ class Asteroid {
 		this.body = new Polygon(xCoords, yCoords, pointCount);
 	}
 
-	public Asteroid[] shatter() {
+	// Accessors //
 
-		/* Sets the existence of the current Asteroid to false and returns 3 new smaller asteroids in an array. */
+	public static int getWeight() {
 
-		if (size > 0) {
-			return new Asteroid[]{
-				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, rotation + Math.random() * 2 - 1),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, rotation + Math.random() * 2 - 1),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, rotation + Math.random() * 2 - 1)
-			};
-		} else return new Asteroid[]{};  // asteroid is broken, no new ones to return
+		/* Returns the current weight of all Asteroids. */
+
+		return weight;
+	}
+
+	public static int getMaxWeight() {
+
+		/* Returns the weight limit. */
+
+		return maxWeight;
+	}
+
+	public static void setMaxWeight(int max) {
+
+		/* Sets the weight limit. */
+
+		maxWeight = max;
 	}
 
 	public void move() {
@@ -230,6 +219,19 @@ class Asteroid {
 
 		this.exists = exists;
 		if (!exists) count--;
+	}
+
+	public Asteroid[] shatter() {
+
+		/* Sets the existence of the current Asteroid to false and returns 3 new smaller asteroids in an array. */
+
+		if (size > 0) {
+			return new Asteroid[]{
+				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, rotation + Math.random() * 2 - 1),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, rotation + Math.random() * 2 - 1),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, rotation + Math.random() * 2 - 1)
+			};
+		} else return new Asteroid[]{};  // asteroid is broken, no new ones to return
 	}
 
 	public void update(Graphics g) {
@@ -327,38 +329,6 @@ class Ship {
 		return this.body;
 	}
 
-	public void accelerate(boolean[] keys) {
-
-		/* Moves the Ship considering the currently pressed keys. */
-
-		isAccelerating = false;
-		if (keys[controls[this.ID][FORWARD]]) {  // moving forward
-			this.vx += this.accel * Math.cos(this.angle);
-			this.vy += this.accel * Math.sin(this.angle);
-			isAccelerating = true;
-		}
-		if (keys[controls[this.ID][RIGHT]]) {  // turning right
-			this.angle -= this.turnSpeed;
-		}
-		if (keys[controls[this.ID][LEFT]]) {  // turning left
-			this.angle += this.turnSpeed;
-		}
-
-		// Slowing ship down by a factor gives ship a max speed
-		this.vx *= this.drag;
-		this.vy *= this.drag;
-
-	}
-
-	public void move() {
-
-		/* Moves the Ship. */
-
-		this.x += this.vx;
-		this.y += this.vy;
-		this.makeShape();
-	}
-
 	public Bullet fire() {
 
 		/* Returns a new Bullet. */
@@ -409,6 +379,38 @@ class Ship {
 		if (!exists) count--;
 	}
 
+	public void accelerate(boolean[] keys) {
+
+		/* Moves the Ship considering the currently pressed keys. */
+
+		isAccelerating = false;
+		if (keys[controls[this.ID][FORWARD]]) {  // moving forward
+			this.vx += this.accel * Math.cos(this.angle);
+			this.vy += this.accel * Math.sin(this.angle);
+			isAccelerating = true;
+		}
+		if (keys[controls[this.ID][RIGHT]]) {  // turning right
+			this.angle -= this.turnSpeed;
+		}
+		if (keys[controls[this.ID][LEFT]]) {  // turning left
+			this.angle += this.turnSpeed;
+		}
+
+		// Slowing ship down by a factor gives ship a max speed
+		this.vx *= this.drag;
+		this.vy *= this.drag;
+
+	}
+
+	public void move() {
+
+		/* Moves the Ship. */
+
+		this.x += this.vx;
+		this.y += this.vy;
+		this.makeShape();
+	}
+
 	public void update(Graphics g) {
 
 		/* Draws the Ship onto a given Graphics component. */
@@ -453,7 +455,6 @@ class Ship {
 			this.damage = damage;
 			this.durability = 3;
 			this.makeShape();
-
 		}
 
 		public void makeShape() {
@@ -463,14 +464,7 @@ class Ship {
 			this.hitbox = new Rectangle((int) this.x - this.radius, (int) this.y - this.radius, this.radius * 2, this.radius * 2);
 		}
 
-		public void move() {
-
-			/* Moves the Bullet. */
-
-			this.x += this.vx;
-			this.y += this.vy;
-		}
-
+		// Accessors //
 
 		public Rectangle getShape() {
 
@@ -533,6 +527,13 @@ class Ship {
 			this.exists = exists;
 		}
 
+		public void move() {
+
+			/* Moves the Bullet. */
+
+			this.x += this.vx;
+			this.y += this.vy;
+		}
 
 		public void update(Graphics g) {
 
@@ -550,31 +551,48 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	/* Used for managing the rest of the active game objects. */
 
+	// Fields //
+
+	// Arraylists for the objects
 	private ArrayList<Ship> ships = new ArrayList<>();
 	private ArrayList<Asteroid> asteroids = new ArrayList<>();
 	private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 	private ArrayList<Space.Wall> walls = new ArrayList<>();
+
+	// game score and difficulty
 	private int score, difficulty;
 
+	// Things to work with events
 	private Timer timer, asteroidsTimer;
 	private boolean[] keys;
+
 	private Image background;
 
 	public Space() {
+
+		/* Constructs and returns a new Space object. */
+
+		// Set up the panel for keyboard input
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
 		this.addKeyListener(this);
+
+		// Use null LM
 		this.setLayout(null);
 
 		this.background = new ImageIcon("Images\\Background_GameScreen.png").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
 	}
 
 	public void init(int difficulty) {
+
+		/* Initializes the Space for game activity. */
+
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
 
-		System.out.println("ay");
 		timer = new Timer(10, this);
 		timer.start();
+		asteroidsTimer = new Timer(5, this);
+		asteroidsTimer.start();
 	}
 
 	public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
@@ -661,6 +679,9 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	}
 
 	public void playerAction(boolean[] keys) {
+
+		/*  */
+
 		for (Ship ship : ships) {
 			ship.accelerate(keys);
 			ship.move();
@@ -695,6 +716,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.score = score;
 	}
 
+	public void setAsteroidSpawnRate(int delay) {
+		asteroidsTimer.setDelay(delay);
+	}
+
 	public void update(Graphics g) {
 		for (Ship ship : ships) ship.update(g);
 		for (Asteroid asteroid : asteroids) asteroid.update(g);
@@ -706,7 +731,47 @@ class Space extends JPanel implements ActionListener, KeyListener {
         g.drawString(Integer.toString(this.score), 20, 20);
 	}
 
+	public boolean getKeyPress(int keycode) {
+		return keys[keycode];
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object src = e.getSource();
+
+		if (src == timer) {
+			this.repaint();
+			this.queryCollisions();
+			this.setAsteroidSpawnRate(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 5);
+			System.out.println();
+		} else if (src == asteroidsTimer) {
+			// addAsteroid(); here
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		keys[e.getKeyCode()] = true;
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keys[e.getKeyCode()] = false;
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.drawImage(this.background, 0, 0, this);
+		Space.this.update(g);
+	}
+
 	private static class Physics {
+
 
 		/* Checks if ship collided with an asteroid */
 
@@ -730,16 +795,16 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		public static void colliding(Ship ship, Asteroid asteroid) {
 			ship.setExists(false);
 		}
-
 		//Asteroid gets damaged
+
 		public static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
 			bullet.setExists(false);
 			asteroid.takeDmg(bullet.getDamage());
 			asteroid.setVX(asteroid.getVX() + bullet.getVX() / (5 * asteroid.getSize()));
 			asteroid.setVY(asteroid.getVY() + bullet.getVY() / (5 * asteroid.getSize()));
 		}
-
 		//Asteroid bounces off of wall
+
 		public static void colliding(Asteroid asteroid, Space.Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
 				asteroid.setVY(-asteroid.getVY());
@@ -747,8 +812,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 				asteroid.setVX(-asteroid.getVX());
 			}
 		}
-
 		//Ship bounces off of wall
+
 		public static void colliding(Ship ship, Space.Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
 				ship.setVY(-ship.getVY());
@@ -756,7 +821,6 @@ class Space extends JPanel implements ActionListener, KeyListener {
 				ship.setVX(-ship.getVX());
 			}
 		}
-
 		//Kills the bullet
 		public static void colliding(Ship.Bullet bullet, Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
@@ -766,15 +830,16 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			}
 			bullet.takeDmg();
 		}
+
 	}
 
 	// will add some new update methods later
-
 	private class Wall {
 
-		/* Used to make Wall objects, impervious barriers with some special effects. */
 
+		/* Used to make Wall objects, impervious barriers with some special effects. */
 		private int x, y, width, height;
+
 		private Rectangle rect;
 
 
@@ -802,43 +867,5 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			return this.height;
 		}
 
-	}
-
-	public boolean getKeyPress(int keycode) {
-		return keys[keycode];
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object src = e.getSource();
-
-		if (src == timer) {
-			this.repaint();
-			this.queryCollisions();
-		} else if (src instanceof KeyEvent && ((KeyEvent) src).getKeyCode() == KeyEvent.VK_ESCAPE) {
-			if (timer.isRunning()) timer.stop();
-			else timer.start();
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		keys[e.getKeyCode()] = true;
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		keys[e.getKeyCode()] = false;
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		g.drawImage(this.background, 0, 0, this);
-////		Space.this.update(g);
 	}
 }
