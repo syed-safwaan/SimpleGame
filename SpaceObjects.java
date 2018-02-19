@@ -241,7 +241,6 @@ class Ship {
 	private final int width = 50, height = 50;
 	private boolean exists;
 
-
 	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
 
 		/* Constructs and returns a new Ship object. */
@@ -386,6 +385,10 @@ class Ship {
 		// magic happens here
 	}
 
+	public static void updateScore(Graphics g){
+
+	}
+
 	public class Bullet {
 
 
@@ -478,6 +481,7 @@ class Space {
 	private ArrayList<Asteroid> asteroids = new ArrayList<>();
 	private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 	private ArrayList<Space.Wall> walls = new ArrayList<>();
+	private int score;
 
 	private SpacePanel screen;
 
@@ -568,7 +572,29 @@ class Space {
 	}
 
 	public void filterExistingObjects() {
+		for(int i = this.asteroids.size() - 1; i >= 0; i--){
+			if(!asteroids.get(i).getExists()){
+				asteroids.remove(i);
+			}
+		}
+        for(int i = this.ships.size() - 1; i >= 0; i--){
+            if(!ships.get(i).getExists()){
+                ships.remove(i);
+            }
+        }
+        for(int i = this.bullets.size() - 1; i >= 0; i--){
+            if(!bullets.get(i).getExists()){
+                bullets.remove(i);
+            }
+        }
+	}
 
+	public int getScore(){
+		return this.score;
+	}
+
+	public void setScore(int score){
+		this.score = score;
 	}
 
 	public void update(Graphics g) {
