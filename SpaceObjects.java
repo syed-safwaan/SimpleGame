@@ -385,7 +385,7 @@ class Ship {
 		// magic happens here
 	}
 
-	public static void updateScore(Graphics g){
+	public static void updateScore(Graphics g) {
 
 	}
 
@@ -397,11 +397,11 @@ class Ship {
 
 		// Fields //
 
-		private double x, y, angle, speed;
+		private double x, y, vx, vy, angle, speed;
 		private boolean exists;
 		private Rectangle hitbox;
 		private int radius = 30;
-		private int damage;
+		private int damage, durability;
 
 		// Constructor //
 
@@ -411,9 +411,13 @@ class Ship {
 
 			this.x = x;
 			this.y = y;
+			this.vx = this.speed * Math.cos(this.angle);
+			this.vy = this.speed * Math.sin(this.angle);
 			this.angle = angle;
 			this.speed = speed;
 			this.exists = true;
+			this.damage = damage;
+			this.durability = 3;
 			this.makeShape();
 
 		}
@@ -426,8 +430,8 @@ class Ship {
 
 			/* Moves the Bullet. */
 
-			this.x += this.speed * Math.cos(this.angle);
-			this.y += this.speed * Math.sin(this.angle);
+			this.x += this.vx;
+			this.y += this.vy;
 		}
 
 
@@ -445,21 +449,50 @@ class Ship {
 			return this.damage;
 		}
 
+		public void takeDmg() {
+			this.durability--;
+			if (durability == 0) this.setExists(false);
+		}
+
 		public double getVX() {
 
 			/* Returns the x-velocity of the Bullet. */
 
-			return this.speed * Math.cos(this.angle);
+			return this.vx;
+		}
+
+		public void setVX(double vx) {
+
+			/* Sets the x-velocity of the Bullet to a given value. */
+
+			this.vx = vx;
 		}
 
 		public double getVY() {
 
 			/* Returns the y-velocity of the Bullet. */
 
-			return this.speed * Math.sin(this.angle);
+			return this.vy;
+		}
+
+		public void setVY(double vy) {
+
+			/* Sets the y-velocity of the Bullet to a given value. */
+
+			this.vy = vy;
+		}
+
+		public boolean exists() {
+
+			/* Returns whether the Bullets exists or not. */
+
+			return this.exists;
 		}
 
 		public void setExists(boolean exists) {
+
+			/* Sets the existence of the Bullet. */
+
 			this.exists = exists;
 		}
 
@@ -554,7 +587,7 @@ class Space {
 			}
 		}
 
-		//Bullet with wall
+		// Bullet with wall
 		for (Ship.Bullet bullet : bullets) {
 			for (Wall wall : walls) {
 				if (Physics.collide(bullet.getShape(), wall.getShape())) {
@@ -572,29 +605,30 @@ class Space {
 	}
 
 	public void filterExistingObjects() {
-		for(int i = this.asteroids.size() - 1; i >= 0; i--){
-			if(!asteroids.get(i).getExists()){
-			    this.score += 100*asteroids.get(i).getSize();
+		for (int i = this.asteroids.size() - 1; i >= 0; i--) {
+			if (!asteroids.get(i).exists()) {
+				this.score += 100 * asteroids.get(i).getSize();
+				for (Asteroid asteroid : asteroids.get(i).shatter()) addAsteroid(asteroid);
 				asteroids.remove(i);
 			}
 		}
-        for(int i = this.ships.size() - 1; i >= 0; i--){
-            if(!ships.get(i).getExists()){
-                ships.remove(i);
-            }
-        }
-        for(int i = this.bullets.size() - 1; i >= 0; i--){
-            if(!bullets.get(i).getExists()){
-                bullets.remove(i);
-            }
-        }
+		for (int i = this.ships.size() - 1; i >= 0; i--) {
+			if (!ships.get(i).exists()) {
+				ships.remove(i);
+			}
+		}
+		for (int i = this.bullets.size() - 1; i >= 0; i--) {
+			if (!bullets.get(i).exists()) {
+				bullets.remove(i);
+			}
+		}
 	}
 
-	public int getScore(){
+	public int getScore() {
 		return this.score;
 	}
 
-	public void setScore(int score){
+	public void setScore(int score) {
 		this.score = score;
 	}
 
@@ -657,10 +691,14 @@ class Space {
 		}
 
 		//Kills the bullet
-		public static void colliding(Ship.Bullet bullet, Space.Wall wall) {
-			bullet.setExists(false);
+		public static void colliding(Ship.Bullet bullet, Wall wall) {
+			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
+				bullet.setVY(-bullet.getVY());
+			} else {
+				bullet.setVX(-bullet.getVX());
+			}
+			bullet.takeDmg();
 		}
-
 	}
 
 	// will add some new update methods later
@@ -668,7 +706,6 @@ class Space {
 	private class Wall {
 
 		/* Used to make Wall objects, impervious barriers with some special effects. */
-
 
 		private int x, y, width, height;
 		private Rectangle rect;
