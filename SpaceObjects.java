@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.util.*;
 import java.awt.geom.Area;
 
@@ -263,7 +264,9 @@ class Ship {
 	private Polygon body;
 	private int[] polygonX = {30, 60, 0};
 	private int[] polygonY = {0, 100, 100};
-	private Image[] imgs;
+	private Image[] bodyImages = {new ImageIcon("Images//Sprite_ShipSimple1.png").getImage(), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage()};
+	private Image fireImage = new ImageIcon("Images//Sprite_ShipFire.png").getImage();;
+	private Image image;
 	private final int width = 50, height = 50;
 	private boolean exists;
 
@@ -279,6 +282,7 @@ class Ship {
 		this.turnSpeed = turnSpeed;
 		this.ammo = ammo;
 		this.exists = true;
+		this.image = bodyImages[this.ID];
 		this.makeShape();
 	}
 
@@ -313,6 +317,7 @@ class Ship {
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
+
 	}
 
 	public Polygon getShape() {
@@ -407,13 +412,18 @@ class Ship {
 	public void update(Graphics g) {
 
 		/* Draws the Ship onto a given Graphics component. */
+/*
+		AffineTransform saveXform = g.getTransform();
 
-		// magic happens here
+		AffineTransform at = new AffineTransform();
+		at.rotate(this.angle,this.x + this.width/2,this.y+this.height/2);
+		g.transform(at);
+		g.drawImage(this.image, (int)x, (int)y, this);
+
+		g.setTransform(saveXform);
+		*/
 	}
 
-	public static void updateScore(Graphics g) {
-
-	}
 
 	public class Bullet {
 
@@ -527,6 +537,10 @@ class Ship {
 		public void update(Graphics g) {
 
 			/* Draws The Bullet onto a Graphics component.*/
+			g.setColor(Color.BLACK);
+			g.drawOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
+			g.setColor(Color.WHITE);
+			g.fillOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
 
 		}
 	}
