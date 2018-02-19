@@ -36,10 +36,22 @@ public class Asteroids extends JFrame implements ActionListener{
 		super("Shooty Circles");
 		setSize(1280, 720);
 
-		startButton = new GameButton(this, new Dimension(338, 96), new Point(100, 200), new ImageIcon("Images\\Button_START0.png"), new ImageIcon("Images\\Button_START1.png"), "main");
+		startButton = new GameButton(this, new Dimension(338, 96), new Point(471, 250), new ImageIcon("Images\\Button_START0.png"), new ImageIcon("Images\\Button_START1.png"), "modes");
+		optionsButton = new GameButton(this, new Dimension(338, 96), new Point(471, 400), new ImageIcon("Images\\Button_OPTIONS0.png"), new ImageIcon("Images\\Button_OPTIONS1.png"), "options");
+		exitButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), new ImageIcon("Images\\Button_EXIT0.png"), new ImageIcon("Images\\Button_EXIT1.png"), "close");
+
 		startMenu = new Menu (
-			new GameButton[] { startButton/*, optionsButton, exitButton */},
+			new GameButton[] { startButton, optionsButton, exitButton },
 			"open"
+		);
+
+		storyButton = new GameButton(this, new Dimension(338, 96), new Point(471, 250), new ImageIcon("Images\\Button_STORY0.png"), new ImageIcon("Images\\Button_STORY1.png"), "modes");
+		arcadeButton = new GameButton(this, new Dimension(338, 96), new Point(471, 400), new ImageIcon("Images\\Button_ARCADE0.png"), new ImageIcon("Images\\Button_ARCADE1.png"), "options");
+		arcadeMultButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), new ImageIcon("Images\\Button_EXIT0.png"), new ImageIcon("Images\\Button_EXIT1.png"), "close");
+
+		modeMenu = new Menu (
+			new GameButton[] { storyButton, arcadeButton, arcadeMultButton },
+			"modes"
 		);
 
 		main = new JPanel(cardLayout);
