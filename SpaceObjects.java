@@ -574,6 +574,7 @@ class Space {
 	public void filterExistingObjects() {
 		for(int i = this.asteroids.size() - 1; i >= 0; i--){
 			if(!asteroids.get(i).getExists()){
+			    this.score += 100*asteroids.get(i).getSize();
 				asteroids.remove(i);
 			}
 		}
