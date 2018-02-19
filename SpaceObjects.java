@@ -13,8 +13,6 @@
     - > Wall        A Space component that involves barriers and interesting physics
 */
 
-import javafx.scene.shape.Circle;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -271,7 +269,7 @@ class Ship {
 
         private double x, y, angle, speed;
         private boolean exists;
-        private Circle circle;
+        private Rectangle hitbox;
         private int radius = 30;
 
         // Constructor //
@@ -289,7 +287,7 @@ class Ship {
         }
 
         public void makeShape(){
-            this.circle = new Circle(this.x, this.y, this.radius);
+            this.hitbox = new Rectangle((int) this.x - 15, (int) this.y - 15, this.radius, this.radius);
         }
 
         public void move() {
@@ -300,8 +298,8 @@ class Ship {
             this.y += this.speed * Math.sin(this.angle);
         }
 
-        public Circle getShape(){
-            return this.circle;
+        public Rectangle getShape(){
+            return this.hitbox;
         }
 
 
@@ -435,37 +433,37 @@ class Space {
 
     }
 
-    private class Physics {
+    private static class Physics {
 
         /* Checks if ship collided with an asteroid */
 
-        public boolean collide(Shape a, Shape b) {
+        public static boolean collide(Shape a, Shape b) {
             Area areaA = new Area(a);
             areaA.intersect(new Area(b));
             return !areaA.isEmpty();
         }
 
-        public void colliding(Asteroid asteroidA, Asteroid asteroidB){
+        public static void colliding(Asteroid asteroidA, Asteroid asteroidB){
             //bounces asteroids
         }
 
-        public void colliding(Ship ship, Asteroid asteroid){
+        public static void colliding(Ship ship, Asteroid asteroid){
             //Kills ship
         }
 
-        public void colliding(Ship.Bullet bullet, Asteroid asteroid){
+        public static void colliding(Ship.Bullet bullet, Asteroid asteroid){
             //Hurts asteroid, kills bullet
         }
 
-        public void colliding(Asteroid asteroid, Space.Wall wall){
+        public static void colliding(Asteroid asteroid, Space.Wall wall){
             //Bounces asteroid
         }
 
-        public void colliding(Ship ship, Space.Wall wall){
+        public static void colliding(Ship ship, Space.Wall wall){
             //Bounces ship
         }
 
-        public void colliding(Ship.Bullet bullet, Space.Wall wall){
+        public static void colliding(Ship.Bullet bullet, Space.Wall wall){
             //Kills bullet
         }
 
