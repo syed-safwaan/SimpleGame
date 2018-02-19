@@ -234,7 +234,10 @@ class Asteroid {
 	public void update(Graphics g) {
 
 		/* Draws the Asteroid onto a given Graphics component. */
-
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillPolygon(this.body);
+        g.setColor(Color.BLACK);
+        g.drawPolygon(this.body);
 	}
 }
 
@@ -682,6 +685,11 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		for (Ship ship : ships) ship.update(g);
 		for (Asteroid asteroid : asteroids) asteroid.update(g);
 		for (Ship.Bullet bullet : bullets) bullet.update(g);
+
+		// Displays score in the top left of the screen
+        g.setColor(Color.YELLOW);
+        g.setFont(new Font("Monospaced", Font.BOLD, 20));
+        g.drawString(Integer.toString(this.score), 20, 20);
 	}
 
 	private static class Physics {
