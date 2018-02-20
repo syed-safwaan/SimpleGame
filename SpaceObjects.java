@@ -255,9 +255,9 @@ class Asteroid {
 
 		if (size > 0) {
 			return new Asteroid[]{
-				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, 0.2 - Math.random()*0.4),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, 0.2 - Math.random()*0.4),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, 0.2 - Math.random()*0.4)
+				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, 0.02 - Math.random()*0.05),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, 0.02 - Math.random()*0.05),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, 0.02 - Math.random()*0.05)
 			};
 		} else return new Asteroid[]{};  // asteroid is broken, no new ones to return
 	}
@@ -855,16 +855,13 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	public void update(Graphics g) {
 		for (Ship ship : ships) ship.update(g, this);
-		for (Asteroid asteroid : asteroids) {
-			asteroid.update(g);
-			g.drawString("" + asteroid.getVX() + " " + asteroid.getVY(), (int) asteroid.getX() + 100, (int) asteroid.getY() + 100);
-		}
+		for (Asteroid asteroid : asteroids) asteroid.update(g);
 		for (Ship.Bullet bullet : bullets) bullet.update(g);
 
 		// Displays score in the top left of the screen
-        g.setColor(Color.YELLOW);
-        g.setFont(new Font("Monospaced", Font.BOLD, 20));
-        g.drawString(Integer.toString(this.score), 20, 20);
+        g.setColor(Color.white);
+        g.setFont(new Font("Monospaced", Font.BOLD, 40));
+        g.drawString(String.format("SCORE: %d", this.score), 20, 40);
 	}
 
 	public boolean getKeyPress(int keycode) {

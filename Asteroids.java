@@ -35,7 +35,7 @@ public class Asteroids extends JFrame implements ActionListener {
 
 	// All menus and buttons in use in the game
 	private Menu startMenu, instructMenu, diffMenu, modeMenu;
-	private GameButton startButton, instructButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton, restartButton;
+	private GameButton startButton, instructButton, exitButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton, restartButton;
 	private GameButton modeBackButton, instructBackButton, diffBackButton;
 
 	private int playerCount;
@@ -69,14 +69,13 @@ public class Asteroids extends JFrame implements ActionListener {
 
 		// Mode Menu
 
-		storyButton = new GameButton(this, new Dimension(338, 96), new Point(471, 250), "STORY", "files");
-		arcadeButton = new GameButton(this, new Dimension(338, 96), new Point(471, 400), "ARCADE", "diff");
-		arcadeMultButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), "2-PLAYER", "diff");
+		arcadeButton = new GameButton(this, new Dimension(338, 96), new Point(471, 325), "ARCADE", "diff");
+		arcadeMultButton = new GameButton(this, new Dimension(338, 96), new Point(471, 475), "2-PLAYER", "diff");
 		modeBackButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "BACK", "open");
 
 		modeMenu = new Menu(
 			new ImageIcon("Images/Title_GAMEMODE.png"),
-			new GameButton[]{storyButton, arcadeButton, arcadeMultButton, modeBackButton},
+			new GameButton[]{arcadeButton, arcadeMultButton, modeBackButton},
 			"modes"
 		);
 
@@ -103,7 +102,7 @@ public class Asteroids extends JFrame implements ActionListener {
 			"diff"
 		);
 
-		restartButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), "RESTART", "open");
+		restartButton = new GameButton(this, new Dimension(338, 96), new Point(471, 375), "RESTART", "open");
 
 		space = new Space();
 		space.add(restartButton);
@@ -142,8 +141,6 @@ public class Asteroids extends JFrame implements ActionListener {
 			cardLayout.show(main, instructMenu.getName());
 		} else if (src == exitButton) {
 			System.exit(0);
-		} else if (src == storyButton) {
-			System.out.println("To be incorporated at a later date!");
 		} else if (src == arcadeButton) {
 			playerCount = 1;
 			cardLayout.show(main, diffMenu.getName());
