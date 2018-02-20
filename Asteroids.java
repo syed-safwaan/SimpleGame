@@ -35,7 +35,7 @@ public class Asteroids extends JFrame implements ActionListener {
 
 	// All menus and buttons in use in the game
 	private Menu startMenu, instructMenu, diffMenu, modeMenu;
-	private GameButton startButton, instructButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton;
+	private GameButton startButton, instructButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton, restartButton;
 	private GameButton modeBackButton, instructBackButton, diffBackButton;
 
 	private int playerCount;
@@ -103,7 +103,12 @@ public class Asteroids extends JFrame implements ActionListener {
 			"diff"
 		);
 
+		restartButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "RESTART", "open");
+		restartButton.setVisible(false);
+
 		space = new Space();
+		space.add(restartButton);
+
 
 		// Setting up the panels for the game
 		main = new JPanel(cardLayout);

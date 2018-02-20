@@ -147,8 +147,8 @@ class Asteroid {
 
 		/* Moves asteroid depending on velocity. */
 
-		this.x += this.vx;
-		this.y += this.vy;
+		this.x += this.vx; this.x %= 1280;
+		this.y += this.vy; this.y %= 720;
 		this.rotation += this.rotationVel;
 		this.makeShape();
 	}
@@ -172,6 +172,20 @@ class Asteroid {
 		/* Returns the body of the Asteroid. */
 
 		return this.body;
+	}
+
+	public double getX() {
+
+		/* Returns the x-position of the Asteroid. */
+
+		return this.x;
+	}
+
+	public double getY() {
+
+		/* Returns the y-position of the Asteroid. */
+
+		return this.y;
 	}
 
 	public double getVX() {
@@ -420,8 +434,8 @@ class Ship {
 
 		/* Moves the Ship. */
 
-		this.x += this.vx;
-		this.y += this.vy;
+		this.x += this.vx + 1280; this.x %= 1280;
+		this.y += this.vy + 720; this.y %= 720;
 
 		this.makeShape();
 	}
@@ -551,6 +565,8 @@ class Ship {
 
 			this.x += this.vx;
 			this.y += this.vy;
+
+			if (0 > this.x || this.x > 1280 || 0 > this.y || this.y > 720) this.setExists(false);
 			this.makeShape();
 		}
 
@@ -561,7 +577,6 @@ class Ship {
 			g.drawOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
 			g.setColor(Color.WHITE);
 			g.fillOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
-
 
 		}
 	}
@@ -610,8 +625,13 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		/* Initializes the Space for game activity. */
 
+		this.score = 0;
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
+
+		this.asteroids.clear();
+		this.ships.clear();
+		this.bullets.clear();
 
 		for(int i = 0; i < playerCount; i++) {
 			this.addShip(new Ship(620, 260 + i * 100, 0.05, 0.995, 0.1, 9999999));
@@ -628,13 +648,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		asteroidsTimer.start();
 	}
 
-	public Space(String asteroidData, boolean asteroidSpawn, int width, int height) {
-
-		/* Constructs and returns a new Space object. */
-
-	}
-
-	public void spawnAsteroid(){
+	private void spawnAsteroid(){
 
 		Asteroid newA;
 		int aX, aY, aVX, aVY;
@@ -643,33 +657,33 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		switch (side) {
 			case 0:  // left
-				aX = rng.nextInt(150) + 50;
-				aY = rng.nextInt(620) + 50;
+				aX = rng.nextInt(150) + 150;
+				aY = rng.nextInt(620) + 150;
 				aVX = rng.nextInt(20) + 5;
-				aVY = rng.nextInt(10) - 10;
+				aVY = rng.nextInt(30) - 30;
 				break;
 			case 1:  // top
-				aX = rng.nextInt(1180) + 50;
-				aY = rng.nextInt(150) + 50;
-				aVX = rng.nextInt(10) - 10;
+				aX = rng.nextInt(1180) + 150;
+				aY = rng.nextInt(150) + 150;
+				aVX = rng.nextInt(30) - 30;
 				aVY = rng.nextInt(20) + 5;
 				break;
 			case 2:  // right
-				aX = 1280 - (rng.nextInt(150) + 50);
-				aY = rng.nextInt(620) + 50;
+				aX = 1280 - (rng.nextInt(150) + 150);
+				aY = rng.nextInt(620) + 150;
 				aVX = -(rng.nextInt(20) + 5);
-				aVY = rng.nextInt(10) - 10;
+				aVY = rng.nextInt(30) - 30;
 				break;
 			default:  // bottom
-				aX = 1280 - (rng.nextInt(150) + 50);
-				aY = 720 - (rng.nextInt(620) + 50);
+				aX = 1280 - (rng.nextInt(150) + 150);
+				aY = 720 - (rng.nextInt(620) + 150);
 				aVX = -(rng.nextInt(20) + 5);
-				aVY = -(rng.nextInt(10) - 10);
+				aVY = -(rng.nextInt(30) - 30);
 				break;
 
 		}
 
-		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, Math.random()*(0.5-Math.random())/3);
+		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, rng.nextDouble() / 100);
 
 		for (Asteroid asteroid : asteroids) {
 			if (Physics.collide(newA.getShape(), asteroid.getShape())) return;
@@ -686,21 +700,21 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		addAsteroid(newA);
     }
 
-	public void addAsteroid(Asteroid a) {
+	private void addAsteroid(Asteroid a) {
 
 		/* Adds a Asteroid to the Space. */
 
 		asteroids.add(a);
 	}
 
-	public void addShip(Ship s) {
+	private void addShip(Ship s) {
 
 		/* Adds a Ship to the Space. */
 
 		ships.add(s);
 	}
 
-	public void queryCollisions() {
+	private void queryCollisions() {
 
 		/* Checking for collisions between pairs of objects. */
 
@@ -732,24 +746,32 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 
 		// Asteroids with wall
-		for (Asteroid asteroid : asteroids) {
-			for (Wall wall : walls) {
-				if (Physics.collide(asteroid.getShape(), wall.getShape())) {
-					Physics.colliding(asteroid, wall);
-				}
-			}
-		}
+//		for (Asteroid asteroid : asteroids) {
+//			for (Wall wall : walls) {
+//				if (Physics.collide(asteroid.getShape(), wall.getShape())) {
+//					Physics.colliding(asteroid, wall);
+//				}
+//			}
+//		}
+//
+//		// Ship with wall
+//		for (Ship ship : ships) {
+//			for (Wall wall : walls) {
+//				if (Physics.collide(ship.getShape(), wall.getShape())) {
+//					Physics.colliding(ship, wall);
+//				}
+//			}
+//		}
+//
+//		// Bullet with wall
+//		for (Ship.Bullet bullet : bullets) {
+//			for (Wall wall : walls) {
+//				if (Physics.collide(bullet.getShape(), wall.getShape())) {
+//					Physics.colliding(bullet, wall);
+//				}
+//			}
+//		}
 
-		// Ship with wall
-		for (Ship ship : ships) {
-			for (Wall wall : walls) {
-				if (Physics.collide(ship.getShape(), wall.getShape())) {
-					Physics.colliding(ship, wall);
-				}
-			}
-		}
-
-		// Bullet with wall
 		for (Ship.Bullet bullet : bullets) {
 			for (Wall wall : walls) {
 				if (Physics.collide(bullet.getShape(), wall.getShape())) {
@@ -760,7 +782,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 	}
 
-	public void playerAction(boolean[] keys) {
+	private void playerAction(boolean[] keys) {
 
 		/*  */
 
@@ -775,15 +797,15 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 	}
 
-	public void moveBullets(){
+	private void moveBullets(){
 		for (Ship.Bullet bullet : bullets) bullet.move();
 	}
 
-	public void moveAsteroids(){
+	private void moveAsteroids(){
 		for (Asteroid asteroid : asteroids) asteroid.move();
 	}
 
-	public void filterExistingObjects() {
+	private void filterExistingObjects() {
 		for (int i = this.asteroids.size() - 1; i >= 0; i--) {
 			if (!asteroids.get(i).exists()) {
 				this.score += 100 * asteroids.get(i).getSize();
@@ -811,13 +833,20 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.score = score;
 	}
 
-	public void setAsteroidSpawnRate() {
+	private void setAsteroidSpawnRate() {
 		asteroidsTimer.setDelay(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 500);
+	}
+
+	public boolean hasGameEnded() {
+		return ships.isEmpty();
 	}
 
 	public void update(Graphics g) {
 		for (Ship ship : ships) ship.update(g, this);
-		for (Asteroid asteroid : asteroids) asteroid.update(g);
+		for (Asteroid asteroid : asteroids) {
+			asteroid.update(g);
+			g.drawString("" + asteroid.getVX() + " " + asteroid.getVY(), (int) asteroid.getX() + 100, (int) asteroid.getY() + 100);
+		}
 		for (Ship.Bullet bullet : bullets) bullet.update(g);
 
 		// Displays score in the top left of the screen
@@ -843,7 +872,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.moveBullets();
 			this.moveAsteroids();
 			this.setAsteroidSpawnRate();
-
+			if (hasGameEnded());
 		} else if (src == asteroidsTimer) {
 			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
 		}
@@ -875,13 +904,13 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		/* Checks if ship collided with an asteroid */
 
-		public static boolean collide(Shape a, Shape b) {
+		private static boolean collide(Shape a, Shape b) {
 			Area areaA = new Area(a);
 			areaA.intersect(new Area(b));
 			return !areaA.isEmpty();
 		}
 
-		public static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
+		private static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
 			double newAvx = asteroidA.getVX() + asteroidB.getVX() * asteroidA.getSize() / asteroidB.getSize();
 			double newAvy = asteroidA.getVY() + asteroidB.getVY() * asteroidA.getSize() / asteroidB.getSize();
 			double newBvx = asteroidB.getVX() + asteroidA.getVX() * asteroidB.getSize() / asteroidA.getSize();
@@ -892,12 +921,12 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			asteroidB.setVY(newBvy);
 		}
 
-		public static void colliding(Ship ship, Asteroid asteroid) {
+		private static void colliding(Ship ship, Asteroid asteroid) {
 			ship.setExists(false);
 		}
 		//Asteroid gets damaged
 
-		public static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
+		private static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
 			bullet.setExists(false);
 			asteroid.takeDmg(bullet.getDamage());
 			asteroid.setVX(asteroid.getVX() + bullet.getVX() / (5 * asteroid.getSize()));
@@ -905,7 +934,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 		//Asteroid bounces off of wall
 
-		public static void colliding(Asteroid asteroid, Space.Wall wall) {
+		private static void colliding(Asteroid asteroid, Space.Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
 				asteroid.setVY(-asteroid.getVY());
 			} else {
@@ -914,7 +943,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 		//Ship bounces off of wall
 
-		public static void colliding(Ship ship, Space.Wall wall) {
+		private static void colliding(Ship ship, Space.Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
 				ship.setVY(-ship.getVY());
 			} else {
@@ -922,7 +951,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			}
 		}
 		//Kills the bullet
-		public static void colliding(Ship.Bullet bullet, Wall wall) {
+		private static void colliding(Ship.Bullet bullet, Wall wall) {
 			if (wall.getWidth() > wall.getHeight()) { //Checks if wall is vertical or horizontal
 				bullet.setVY(-bullet.getVY());
 			} else {
