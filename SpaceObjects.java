@@ -757,33 +757,6 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			}
 		}
 
-		// Asteroids with wall
-//		for (Asteroid asteroid : asteroids) {
-//			for (Wall wall : walls) {
-//				if (Physics.collide(asteroid.getShape(), wall.getShape())) {
-//					Physics.colliding(asteroid, wall);
-//				}
-//			}
-//		}
-//
-//		// Ship with wall
-//		for (Ship ship : ships) {
-//			for (Wall wall : walls) {
-//				if (Physics.collide(ship.getShape(), wall.getShape())) {
-//					Physics.colliding(ship, wall);
-//				}
-//			}
-//		}
-//
-//		// Bullet with wall
-//		for (Ship.Bullet bullet : bullets) {
-//			for (Wall wall : walls) {
-//				if (Physics.collide(bullet.getShape(), wall.getShape())) {
-//					Physics.colliding(bullet, wall);
-//				}
-//			}
-//		}
-
 		for (Ship.Bullet bullet : bullets) {
 			for (Wall wall : walls) {
 				if (Physics.collide(bullet.getShape(), wall.getShape())) {
@@ -941,8 +914,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		private static void colliding(Ship.Bullet bullet, Asteroid asteroid) {
 			bullet.setExists(false);
 			asteroid.takeDmg(bullet.getDamage());
-			asteroid.setVX(asteroid.getVX() + bullet.getVX() / (5 * asteroid.getSize()));
-			asteroid.setVY(asteroid.getVY() + bullet.getVY() / (5 * asteroid.getSize()));
+			asteroid.setVX(asteroid.getVX() + bullet.getVX() / (25 * asteroid.getSize()));
+			asteroid.setVY(asteroid.getVY() + bullet.getVY() / (25 * asteroid.getSize()));
 		}
 		//Asteroid bounces off of wall
 
