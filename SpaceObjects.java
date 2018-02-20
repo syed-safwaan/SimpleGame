@@ -94,7 +94,7 @@ class Asteroid {
 		this.makeShape();
 
 		// Adds the weight of the new asteroid to the whole weight
-		weight += (int) Math.pow(3, size);
+		weight += (int) Math.pow(size, 3);
 	}
 
 	private void makeShape() {
@@ -257,7 +257,7 @@ class Asteroid {
 
 		this.exists = exists;
 		if (!exists) {
-			weight -= (int) Math.pow(3, this.size);
+			weight -= (int) Math.pow(this.size, 3);
 		}
 	}
 
@@ -284,6 +284,9 @@ class Asteroid {
 		g.fillPolygon(this.body);
 		g.setColor(Color.BLACK);
 		g.drawPolygon(this.body);
+		g.setFont(new Font("Monospaced", Font.BOLD, 15));
+		g.setColor(Color.WHITE);
+		g.drawString("" + this.hp, (int) this.x + this.rectSize / 2 , (int) this.y + this.rectSize / 2);
 	}
 }
 
@@ -377,7 +380,7 @@ class Ship {
 	public Bullet shoot(boolean[] keys) {
 		this.shootingCooldown--;
 		if (keys[controls[this.ID][SHOOT]] && this.shootingCooldown < 0) {
-			this.shootingCooldown = 20;
+			this.shootingCooldown = 15;
 			return this.fire();
 		} else {
 			return null;
@@ -388,7 +391,7 @@ class Ship {
 
 		/* Returns a new Bullet. */
 
-		return new Bullet(this.x + this.width / 2, this.y + this.height / 2, this.angle - 1.57, 8, 3);
+		return new Bullet(this.x + this.width / 2, this.y + this.height / 2, this.angle - 1.57, 14, 3);
 	}
 
 	public double getVX() {
@@ -863,7 +866,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		/* Sets the spawn rate for Asteroids in the Space. */
 
-		asteroidsTimer.setDelay(50 * (Asteroid.getWeight() / Asteroid.getMaxWeight()) + 500);
+		asteroidsTimer.setDelay(50 * Asteroid.getWeight() / Asteroid.getMaxWeight() + 500);
 	}
 
 	public boolean hasGameEnded() {
@@ -884,7 +887,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		// Displays score in the top left of the screen
 		g.setColor(Color.white);
 		g.setFont(new Font("Monospaced", Font.BOLD, 40));
-		g.drawString(String.format("SCORE: %d", this.score), 20, 40);
+		g.drawString(String.format("SCORE: %d ASTEROID MASS: %d", this.score, Asteroid.getWeight()), 20, 40);
 	}
 
 	@Override
