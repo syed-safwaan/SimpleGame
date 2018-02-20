@@ -17,6 +17,7 @@ import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.ImageObserver;
 import java.util.*;
 import java.awt.geom.Area;
 
@@ -411,19 +412,19 @@ class Ship {
 		this.makeShape();
 	}
 
-	public void update(Graphics g) {
+	public void update(Graphics g, ImageObserver observer) {
 
 		/* Draws the Ship onto a given Graphics component. */
-/*
-		AffineTransform saveXform = g.getTransform();
+		Graphics2D g2D = (Graphics2D)g;
+		AffineTransform saveXform = g2D.getTransform();
 
 		AffineTransform at = new AffineTransform();
 		at.rotate(this.angle,this.x + this.width/2,this.y+this.height/2);
-		g.transform(at);
-		g.drawImage(this.image, (int)x, (int)y, this);
+		g2D.transform(at);
+		g2D.drawImage(this.image, (int)x, (int)y, observer);
 
-		g.setTransform(saveXform);
-		*/
+		g2D.setTransform(saveXform);
+
 	}
 
 
@@ -723,7 +724,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	}
 
 	public void update(Graphics g) {
-		for (Ship ship : ships) ship.update(g);
+		for (Ship ship : ships) ship.update(g, this);
 		for (Asteroid asteroid : asteroids) asteroid.update(g);
 		for (Ship.Bullet bullet : bullets) bullet.update(g);
 
