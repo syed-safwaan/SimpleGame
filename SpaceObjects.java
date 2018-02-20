@@ -750,6 +750,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.repaint();
 			this.requestFocusInWindow();
 			this.queryCollisions();
+			this.playerAction(keys);
 			this.setAsteroidSpawnRate(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 5);
 		} else if (src == asteroidsTimer) {
 			// addAsteroid(); here
