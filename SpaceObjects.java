@@ -317,8 +317,6 @@ class Ship {
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
-			System.out.println(newX);
-			System.out.println(newY);
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
@@ -439,6 +437,7 @@ class Ship {
 			g2D.drawImage(this.fireImage, (int)this.x, (int)this.y+this.height, observer);
 		}
 		g2D.setTransform(saveXform);
+
 	}
 
 
@@ -664,7 +663,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		}
 
-		newA = new Asteroid(2, aX, aY, aVX, aVY, rng.nextInt(10));
+		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, rng.nextInt(10));
 
 		for (Asteroid asteroid : asteroids) {
 			if (Physics.collide(newA.getShape(), asteroid.getShape())) return;
@@ -773,6 +772,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		for (Ship.Bullet bullet : bullets) bullet.move();
 	}
 
+	public void moveAsteroids(){
+		for (Asteroid asteroid : asteroids) asteroid.move();
+	}
+
 	public void filterExistingObjects() {
 		for (int i = this.asteroids.size() - 1; i >= 0; i--) {
 			if (!asteroids.get(i).exists()) {
@@ -829,9 +832,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.requestFocusInWindow();
 			this.queryCollisions();
 			this.playerAction(keys);
+			this.moveBullets();
+			this.moveAsteroids();
 			this.setAsteroidSpawnRate();
 		} else if (src == asteroidsTimer) {
-			System.out.println("asteroid time");
 			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
 		}
 	}
