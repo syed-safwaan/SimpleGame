@@ -586,12 +586,15 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.background = new ImageIcon("Images\\Background_GameScreen.png").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
 	}
 
-	public void init(int difficulty) {
+	public void init(int difficulty, int playerCount) {
 
 		/* Initializes the Space for game activity. */
 
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
+		for(int i = 0; i < playerCount; i++) {
+			this.addShip(new Ship(620, 260 + i * 100, 1, 0.1, 0.1, 9999999));
+		}
 
 		timer = new Timer(10, this);
 		timer.start();

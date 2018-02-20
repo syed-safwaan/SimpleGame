@@ -38,6 +38,8 @@ public class Asteroids extends JFrame implements ActionListener {
 	private GameButton startButton, instructButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton;
 	private GameButton modeBackButton, instructBackButton, diffBackButton;
 
+	private int playerCount;
+
 	// Main panel where everything is put on (uses the CardLayout)
 	JPanel main;
 
@@ -135,19 +137,19 @@ public class Asteroids extends JFrame implements ActionListener {
 		} else if (src == storyButton) {
 			System.out.println("To be incorporated at a later date!");
 		} else if (src == arcadeButton) {
-			// set up arcade game creds
+			playerCount = 1;
 			cardLayout.show(main, diffMenu.getName());
 		} else if (src == arcadeMultButton) {
-			// start arcade mult session
+			playerCount = 2;
 			cardLayout.show(main, diffMenu.getName());
 		} else if (src == easyDiffButton) {
-			space.init(1);
+			space.init(1, playerCount);
 			cardLayout.show(main, "space");
 		} else if (src == medDiffButton) {
-			space.init(2);
+			space.init(2, playerCount);
 			cardLayout.show(main, "space");
 		} else if (src == hardDiffButton) {
-			space.init(3);
+			space.init(3, playerCount);
 			cardLayout.show(main, "space");
 		} else if (src == modeBackButton || src == instructBackButton) {
 			cardLayout.show(main, startMenu.getName());
