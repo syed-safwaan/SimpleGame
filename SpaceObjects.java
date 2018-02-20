@@ -422,7 +422,7 @@ class Ship {
 		g2D.transform(at);
 		g2D.drawImage(this.image, (int)this.x, (int)this.y, observer);
 		if(this.isAccelerating){
-			g2D.drawImage(this.fireImage, (int)this.x+this.width, (int)this.y+this.height, observer);
+			g2D.drawImage(this.fireImage, (int)this.x, (int)this.y+this.height, observer);
 		}
 		g2D.setTransform(saveXform);
 
@@ -593,7 +593,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
 		for(int i = 0; i < playerCount; i++) {
-			this.addShip(new Ship(620, 260 + i * 100, 0.1, 0.98, 0.1, 9999999));
+			this.addShip(new Ship(620, 260 + i * 100, 0.05, 0.995, 0.1, 9999999));
 		}
 
 		timer = new Timer(10, this);
