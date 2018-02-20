@@ -148,8 +148,8 @@ class Asteroid {
 
 		this.vx += 0.1-Math.random()*0.2; this.vx *= 0.99;
 		this.vy += 0.1-Math.random()*0.2; this.vy *= 0.99;
-		this.x += this.vx; this.x = ((this.x + 1680) % 1480) - 200;
-		this.y += this.vy; this.y = ((this.y + 1120) % 920) - 200;
+		this.x += this.vx; this.x = ((this.x + 1280 + 2*this.rectSize) % (1280 + this.rectSize)) - this.rectSize;
+		this.y += this.vy; this.y = ((this.y + 720 + 2*this.rectSize) % (720 + this.rectSize)) - this.rectSize;
 		this.rotation += this.rotationVel;
 		this.makeShape();
 	}
@@ -248,7 +248,7 @@ class Asteroid {
 
 		if (size > 0) {
 			return new Asteroid[]{
-				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, 0.5 - Math.random()),
+				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, 0.2 - Math.random()*0.4),
 				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, 0.2 - Math.random()*0.4),
 				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, 0.2 - Math.random()*0.4)
 			};
