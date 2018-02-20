@@ -270,7 +270,7 @@ class Ship {
 	private Image[] bodyImages = {new ImageIcon("Images//Sprite_ShipSimple1.png").getImage(), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage()};
 	private Image fireImage = new ImageIcon("Images//Sprite_ShipFire.png").getImage();;
 	private Image image;
-	private final int width = 50, height = 50;
+	private final int width = 50, height = 80;
 	private boolean exists;
 
 	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
