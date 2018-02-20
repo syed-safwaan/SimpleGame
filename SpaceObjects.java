@@ -309,14 +309,16 @@ class Ship {
 			yCoords[i] = (int) (this.y + polygonY[i]);
 		}
 
-		double centerX = this.width / 2, centerY = this.height / 2;
+		double centerX = this.x + this.width / 2, centerY = this.y + this.height / 2;
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
-			double ang = this.angle + Math.acos((xCoords[i] - centerX));
+			double ang = this.angle + Math.acos(((xCoords[i] - centerX)/dist));
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
+			System.out.println(newX);
+			System.out.println(newY);
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
@@ -425,6 +427,8 @@ class Ship {
 			g2D.drawImage(this.fireImage, (int)this.x, (int)this.y+this.height, observer);
 		}
 		g2D.setTransform(saveXform);
+		g2D.setColor(Color.GREEN);
+		g2D.fillPolygon(this.body);
 
 	}
 
@@ -592,9 +596,15 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		this.difficulty = difficulty;
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
+
 		for(int i = 0; i < playerCount; i++) {
 			this.addShip(new Ship(620, 260 + i * 100, 0.05, 0.995, 0.1, 9999999));
 		}
+
+		walls.add(new Wall(-30, 0, 30, 720));
+		walls.add(new Wall(1280, 0, 30, 720));
+		walls.add(new Wall(0, -30, 1280, 30));
+		walls.add(new Wall(0, 720, 1280, 30));
 
 		timer = new Timer(10, this);
 		timer.start();
