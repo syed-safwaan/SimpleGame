@@ -62,7 +62,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		exitButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), "EXIT", "close");
 
 		startMenu = new Menu(
-			new ImageIcon("Images\\Title_SHOOTY CIRCLES.png"),
+			new ImageIcon("Images/Title_SHOOTY CIRCLES.png"),
 			new GameButton[]{startButton, instructButton, exitButton},
 			"open"
 		);
@@ -75,7 +75,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		modeBackButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "BACK", "open");
 
 		modeMenu = new Menu(
-			new ImageIcon("Images\\Title_GAMEMODE.png"),
+			new ImageIcon("Images/Title_GAMEMODE.png"),
 			new GameButton[]{storyButton, arcadeButton, arcadeMultButton, modeBackButton},
 			"modes"
 		);
@@ -85,7 +85,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		instructBackButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "BACK", "open");
 
 		instructMenu = new Menu(
-			new ImageIcon("Images\\Text_Manual.png"),
+			new ImageIcon("Images/Text_Manual.png"),
 			new GameButton[]{instructBackButton},
 			"instruct"
 		);
@@ -98,7 +98,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		diffBackButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "BACK", "newfile");
 
 		diffMenu = new Menu(
-			new ImageIcon("Images\\Title_DIFFICULTY.png"),
+			new ImageIcon("Images/Title_DIFFICULTY.png"),
 			new GameButton[]{easyDiffButton, medDiffButton, hardDiffButton, diffBackButton},
 			"diff"
 		);

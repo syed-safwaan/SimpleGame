@@ -268,8 +268,8 @@ class Ship {
 	private int[] polygonX = {10, 20, 0};
 	private int[] polygonY = {0, 30, 30};
 	private final int width = 20, height = 30;
-	private Image[] bodyImages = {new ImageIcon("Images//Sprite_ShipSimple1.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)};
-	private Image fireImage = new ImageIcon("Images//Sprite_ShipFire.png").getImage();;
+	private Image[] bodyImages = {new ImageIcon("Images/Sprite_ShipSimple1.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)};
+	private Image fireImage = new ImageIcon("Images/Sprite_ShipFire.png").getImage().getScaledInstance(width, height * 3 / 5, Image.SCALE_DEFAULT);
 	private Image image;
 	private boolean exists;
 
@@ -583,7 +583,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		// Use null LM
 		this.setLayout(null);
 
-		this.background = new ImageIcon("Images\\Background_GameScreen.png").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
+		this.background = new ImageIcon("Images/Background_GameScreen.png").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
 	}
 
 	public void init(int difficulty, int playerCount) {
@@ -763,13 +763,11 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
-		System.out.println("ay pressed");
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		keys[e.getKeyCode()] = false;
-		System.out.println("ay released");
 	}
 
 	@Override

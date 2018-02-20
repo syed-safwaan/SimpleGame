@@ -42,9 +42,9 @@ class GameButton extends JButton {
 		this.setMargin(new Insets(0, 0, 0, 0));
 		this.setContentAreaFilled(false);
 
-		ImageIcon idleImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s0.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
-		ImageIcon hoverImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s1.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
-		ImageIcon pressedImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s2.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon idleImg = new ImageIcon(new ImageIcon(String.format("Images/Button_%s0.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon hoverImg = new ImageIcon(new ImageIcon(String.format("Images/Button_%s1.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon pressedImg = new ImageIcon(new ImageIcon(String.format("Images/Button_%s2.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
 
 		this.setIcon(idleImg);
 		this.setRolloverIcon(hoverImg);
@@ -112,7 +112,7 @@ class Menu extends JPanel {
 	private ImageIcon title;
 	private GameButton[] buttons;
 	private String name;  // used for CardLayout names
-	private Image background = new ImageIcon("Images\\Background_MainScreen.jpg").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
+	private Image background = new ImageIcon("Images/Background_MainScreen.jpg").getImage().getScaledInstance(1280, 720, Image.SCALE_DEFAULT);
 
 	// Constructors //
 
@@ -140,7 +140,7 @@ class Menu extends JPanel {
 		for (GameButton button : buttons) this.add(button);
 
 		// Setup title image
-		JLabel back = new JLabel(new ImageIcon("Images\\Background_MainScreen.jpg"));
+		JLabel back = new JLabel(new ImageIcon("Images/Background_MainScreen.jpg"));
 		this.add(back);
 	}
 
