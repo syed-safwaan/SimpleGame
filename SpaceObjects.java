@@ -97,25 +97,29 @@ class Asteroid {
 
 		/* Constructs a Polygon for the Asteroid. */
 
+		// Used to construct polygon later
 		int pointCount = polygonX[this.size][bodyType].length;
 		int[] xCoords = new int[pointCount];
 		int[] yCoords = new int[pointCount];
 
+		// Gets all points of original polygon
 		for (int i = 0; i < pointCount; i++) {
 			xCoords[i] = (int) (this.x + polygonX[this.size][this.bodyType][i]);
 			yCoords[i] = (int) (this.y + polygonY[this.size][this.bodyType][i]);
 		}
 
+		// Uses winding function to rotate all points from original polygon
 		double centerX = this.x + this.rectSize / 2, centerY = this.y + this.rectSize / 2;
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.rotation + Math.atan2(yCoords[i] - centerY, xCoords[i] - centerX);
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
+			// Reassigns new points
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
 		}
-
+		// Reassigns body to polygon
 		this.body = new Polygon(xCoords, yCoords, pointCount);
 	}
 
@@ -279,7 +283,7 @@ class Ship {
 	// Fields //
 
 	private static int count = 0;  // to count active Ships
-	private static int maxCount = 2;  // max active Ships
+
 	// Controls
 	private static int controls[][] = {
 		{KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_SPACE},
@@ -289,7 +293,7 @@ class Ship {
 	private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
 	private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
 	private int ID;  // ID used for identification
-	private int ammo, attackRate = 20, shootingCooldown = 0;
+	private int attackRate = 20, shootingCooldown = 0;
 	private boolean isAccelerating;
 	private Polygon body;
 	private int[] polygonX = {10, 20, 0};
@@ -300,7 +304,7 @@ class Ship {
 	private Image image;
 	private boolean exists;
 
-	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
+	public Ship(double x, double y, double accel, double drag, double turnSpeed) {
 
 		/* Constructs and returns a new Ship object. */
 
@@ -310,7 +314,6 @@ class Ship {
 		this.accel = accel;
 		this.drag = drag;
 		this.turnSpeed = turnSpeed;
-		this.ammo = ammo;
 		this.exists = true;
 		this.image = bodyImages[this.ID];
 		this.makeShape();
@@ -327,25 +330,29 @@ class Ship {
 
 		/* Constructs a Polygon for the Ship. */
 
+		// Used to construct polygon later
 		int pointCount = 3;
 		int[] xCoords = new int[pointCount];
 		int[] yCoords = new int[pointCount];
 
+		// Makes original polygon without rotation
 		for (int i = 0; i < pointCount; i++) {
 			xCoords[i] = (int) (this.x + polygonX[i]);
 			yCoords[i] = (int) (this.y + polygonY[i]);
 		}
 
+		// Uses winding function to rotate all points from original polygon
 		double centerX = this.x + this.width / 2, centerY = this.y + this.height / 2;
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.angle + Math.atan2(yCoords[i] - centerY, xCoords[i] - centerX);
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
+			// Reassigns new points
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
 		}
-
+		// Reassigns body
 		this.body = new Polygon(xCoords, yCoords, pointCount);
 
 	}
@@ -646,7 +653,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.bullets.clear();
 
 		for(int i = 0; i < playerCount; i++) {
-			this.addShip(new Ship(620, 260 + i * 100, 0.05, 0.995, 0.1, 9999999));
+			this.addShip(new Ship(620, 260 + i * 100, 0.05, 0.995, 0.1));
 		}
 
 		walls.add(new Wall(-20, 0, 30, 720));
