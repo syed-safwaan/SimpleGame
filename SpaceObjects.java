@@ -157,6 +157,11 @@ class Asteroid {
 		return maxWeight;
 	}
 
+	public int getRectSize(){
+
+		return this.rectSize;
+	}
+
 	public static void setMaxWeight(int max) {
 
 		/* Sets the weight limit. */
@@ -172,6 +177,10 @@ class Asteroid {
 		this.vx *= 0.98;
 		this.vy += 0.1 - Math.random() * 0.2;
 		this.vy *= 0.98;
+		if(this.vy > 2) this.vy = 2;
+		if(this.vy < -2) this.vy = -2;
+		if(this.vx > 2) this.vx = 2;
+		if(this.vx < -2) this.vx = -2;
 		this.x += this.vx;
 		this.x = ((this.x + 1280 + 2 * this.rectSize) % (1280 + this.rectSize)) - this.rectSize;
 		this.y += this.vy;
@@ -978,10 +987,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			/* Handles collision between two Asteroids. */
 
 			// Generates new velocities for the two, depending on their current velocities and their distances
-			double newAvx = a.getVX() + 0.01 * (a.getX() - b.getX()) * (1 + b.getSize()) / (1 + a.getSize());
-			double newAvy = a.getVY() + 0.01 * (a.getY() - b.getY()) * (1 + b.getSize()) / (1 + a.getSize());
-			double newBvx = b.getVX() + 0.01 * (b.getX() - a.getX()) * (1 + a.getSize()) / (1 + b.getSize());
-			double newBvy = b.getVY() + 0.01 * (b.getY() - a.getY()) * (1 + a.getSize()) / (1 + b.getSize());
+			double newAvx = a.getVX() + 0.01 * (a.getX() + a.getRectSize()/2 - b.getX() - b.getRectSize()/2) * (1 + b.getSize()) / (1 + a.getSize());
+			double newAvy = a.getVY() + 0.01 * (a.getY() + a.getRectSize()/2 - b.getY() - b.getRectSize()/2) * (1 + b.getSize()) / (1 + a.getSize());
+			double newBvx = b.getVX() + 0.01 * (b.getX() + b.getRectSize()/2 - a.getX() - a.getRectSize()/2) * (1 + a.getSize()) / (1 + b.getSize());
+			double newBvy = b.getVY() + 0.01 * (b.getY() + b.getRectSize()/2 - a.getY() - a.getRectSize()/2) * (1 + a.getSize()) / (1 + b.getSize());
 
 			// Sets the velocities
 			a.setVX(newAvx);
