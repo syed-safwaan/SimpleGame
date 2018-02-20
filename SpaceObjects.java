@@ -451,7 +451,7 @@ class Ship {
 
 		private double x, y, vx, vy, angle, speed;
 		private boolean exists;
-		private Rectangle hitbox;
+		private Polygon hitbox;
 		private int radius = 3;
 		private int damage, durability;
 
@@ -477,12 +477,14 @@ class Ship {
 
 			/* Constructs the Bullet hitbox Rectangle. */
 
-			this.hitbox = new Rectangle((int) this.x - this.radius, (int) this.y - this.radius, this.radius * 2, this.radius * 2);
+			int[] xCoords = {(int)this.x, (int)this.x + this.radius*2, (int)this.x + this.radius*2, (int)this.x};
+			int[] yCoords = {(int)this.y, (int)this.y, (int)this.y + this.radius*2, (int)this.y + this.radius*2};
+			this.hitbox = new Polygon(xCoords, yCoords, 4);
 		}
 
 		// Accessors //
 
-		public Rectangle getShape() {
+		public Polygon getShape() {
 
 			/* Returns the Bullet hitbox. */
 
@@ -549,6 +551,7 @@ class Ship {
 
 			this.x += this.vx;
 			this.y += this.vy;
+			this.makeShape();
 		}
 
 		public void update(Graphics g) {
@@ -558,6 +561,7 @@ class Ship {
 			g.drawOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
 			g.setColor(Color.WHITE);
 			g.fillOval((int)this.x, (int)this.y, this.radius*2, this.radius*2);
+
 
 		}
 	}
@@ -665,7 +669,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		}
 
-		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, Math.random()*(0.5-Math.random()));
+		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, Math.random()*(0.5-Math.random())/3);
 
 		for (Asteroid asteroid : asteroids) {
 			if (Physics.collide(newA.getShape(), asteroid.getShape())) return;
@@ -749,6 +753,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		for (Ship.Bullet bullet : bullets) {
 			for (Wall wall : walls) {
 				if (Physics.collide(bullet.getShape(), wall.getShape())) {
+					System.out.println(1);
 					Physics.colliding(bullet, wall);
 				}
 			}
