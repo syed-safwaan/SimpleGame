@@ -262,7 +262,7 @@ class Ship {
 	private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
 	private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
 	private int ID;  // ID used for identification
-	private int ammo, attackRate, shootingCooldown;
+	private int ammo, attackRate = 20, shootingCooldown = 0;
 	private boolean isAccelerating;
 	private Polygon body;
 	private int[] polygonX = {10, 20, 0};
@@ -317,6 +317,8 @@ class Ship {
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
+			System.out.println(newX);
+			System.out.println(newY);
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
@@ -330,11 +332,22 @@ class Ship {
 		return this.body;
 	}
 
+	public Bullet shoot(boolean[] keys){
+		this.shootingCooldown--;
+		if(keys[controls[this.ID][SHOOT]] && this.shootingCooldown < 0){
+			this.shootingCooldown = this.attackRate;
+			return this.fire();
+		}
+		else{
+			return null;
+		}
+	}
+
 	public Bullet fire() {
 
 		/* Returns a new Bullet. */
 
-		return new Bullet(this.x, this.y, this.angle, 4, 3);
+		return new Bullet(this.x + this.width/2, this.y + this.height/2, this.angle - 1.57, 8 , 3);
 	}
 
 	public double getVX() {
@@ -438,7 +451,7 @@ class Ship {
 		private double x, y, vx, vy, angle, speed;
 		private boolean exists;
 		private Rectangle hitbox;
-		private int radius = 30;
+		private int radius = 3;
 		private int damage, durability;
 
 		// Constructor //
@@ -449,8 +462,8 @@ class Ship {
 
 			this.x = x;
 			this.y = y;
-			this.vx = this.speed * Math.cos(this.angle);
-			this.vy = this.speed * Math.sin(this.angle);
+			this.vx = speed * Math.cos(angle);
+			this.vy = speed * Math.sin(angle);
 			this.angle = angle;
 			this.speed = speed;
 			this.exists = true;
@@ -747,8 +760,17 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		for (Ship ship : ships) {
 			ship.accelerate(keys);
+			Ship.Bullet tempBullet = ship.shoot(keys);
+			if(tempBullet != null){
+				bullets.add(tempBullet);
+			}
+
 			ship.move();
 		}
+	}
+
+	public void moveBullets(){
+		for (Ship.Bullet bullet : bullets) bullet.move();
 	}
 
 	public void filterExistingObjects() {
@@ -807,7 +829,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.requestFocusInWindow();
 			this.queryCollisions();
 			this.playerAction(keys);
-//			this.setAsteroidSpawnRate();
+			this.setAsteroidSpawnRate();
 		} else if (src == asteroidsTimer) {
 			System.out.println("asteroid time");
 			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
