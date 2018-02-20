@@ -94,7 +94,7 @@ class Asteroid {
 		this.makeShape();
 
 		// Adds the weight of the new asteroid to the whole weight
-		weight += (int) Math.pow(size, 3);
+		weight += (int) Math.pow(3, this.size);
 	}
 
 	private void makeShape() {
@@ -136,6 +136,13 @@ class Asteroid {
 		return weight;
 	}
 
+	public static void setWeight(int newWeight){
+
+		/* Changes weight value */
+
+		weight = newWeight;
+	}
+
 	public static void resetWeight() {
 
 		/* Resets weight back to 0. */
@@ -162,9 +169,9 @@ class Asteroid {
 		/* Moves the Asteroid depending on velocity. */
 
 		this.vx += 0.1 - Math.random() * 0.2;
-		this.vx *= 0.99;
+		this.vx *= 0.98;
 		this.vy += 0.1 - Math.random() * 0.2;
-		this.vy *= 0.99;
+		this.vy *= 0.98;
 		this.x += this.vx;
 		this.x = ((this.x + 1280 + 2 * this.rectSize) % (1280 + this.rectSize)) - this.rectSize;
 		this.y += this.vy;
@@ -257,7 +264,7 @@ class Asteroid {
 
 		this.exists = exists;
 		if (!exists) {
-			weight -= (int) Math.pow(this.size, 3);
+			weight -= (int) Math.pow(3, this.size);
 		}
 	}
 
@@ -732,6 +739,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		// Make the asteroid
 		newA = new Asteroid(2, aX, aY, aVX / 10, aVY / 10, rng.nextDouble() / 100);
+		Asteroid.setWeight(Asteroid.getWeight() - 9);
 
 		// Check for collisions and kill the asteroid if needed
 
@@ -747,6 +755,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			if (Physics.collide(newA.getShape(), bullet.getShape())) return;
 		}
 
+		Asteroid.setWeight(Asteroid.getWeight() + 9);
 		addAsteroid(newA);
 	}
 
