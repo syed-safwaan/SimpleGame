@@ -265,12 +265,12 @@ class Ship {
 	private int ammo, attackRate, shootingCooldown;
 	private boolean isAccelerating;
 	private Polygon body;
-	private int[] polygonX = {30, 60, 0};
-	private int[] polygonY = {0, 100, 100};
-	private Image[] bodyImages = {new ImageIcon("Images//Sprite_ShipSimple1.png").getImage(), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage()};
+	private int[] polygonX = {10, 20, 0};
+	private int[] polygonY = {0, 30, 30};
+	private final int width = 20, height = 30;
+	private Image[] bodyImages = {new ImageIcon("Images//Sprite_ShipSimple1.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT), new ImageIcon("Images//Sprite_ShipSimple2.png").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)};
 	private Image fireImage = new ImageIcon("Images//Sprite_ShipFire.png").getImage();;
 	private Image image;
-	private final int width = 50, height = 50;
 	private boolean exists;
 
 	public Ship(double x, double y, double accel, double drag, double turnSpeed, int ammo) {
