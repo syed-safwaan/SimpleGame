@@ -114,8 +114,6 @@ class Asteroid {
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
-			System.out.println(newX);
-			System.out.println(newY);
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
@@ -319,8 +317,6 @@ class Ship {
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
-			System.out.println(newX);
-			System.out.println(newY);
 		}
 
 		this.body = new Polygon(xCoords, yCoords, pointCount);
@@ -574,6 +570,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	private Image background;
 
+	private Random rng = new Random();
+
 	public Space() {
 
 		/* Constructs and returns a new Space object. */
@@ -620,6 +618,54 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 	public void spawnAsteroid(){
 
+		Asteroid newA;
+		int aX, aY, aVX, aVY;
+
+		int side = rng.nextInt(4);
+
+		switch (side) {
+			case 0:  // left
+				aX = rng.nextInt(150) + 50;
+				aY = rng.nextInt(620) + 50;
+				aVX = rng.nextInt(20) + 5;
+				aVY = rng.nextInt(10) - 10;
+				break;
+			case 1:  // top
+				aX = rng.nextInt(1180) + 50;
+				aY = rng.nextInt(150) + 50;
+				aVX = rng.nextInt(10) - 10;
+				aVY = rng.nextInt(20) + 5;
+				break;
+			case 2:  // right
+				aX = 1280 - (rng.nextInt(150) + 50);
+				aY = rng.nextInt(620) + 50;
+				aVX = -(rng.nextInt(20) + 5);
+				aVY = rng.nextInt(10) - 10;
+				break;
+			default:  // bottom
+				aX = 1280 - (rng.nextInt(150) + 50);
+				aY = 720 - (rng.nextInt(620) + 50);
+				aVX = -(rng.nextInt(20) + 5);
+				aVY = -(rng.nextInt(10) - 10);
+				break;
+
+		}
+
+		newA = new Asteroid(2, aX, aY, aVX, aVY, rng.nextInt(10));
+
+		for (Asteroid asteroid : asteroids) {
+			if (Physics.collide(newA.getShape(), asteroid.getShape())) return;
+		}
+
+		for (Ship ship : ships) {
+			if (Physics.collide(newA.getShape(), ship.getShape())) return;
+		}
+
+		for (Ship.Bullet bullet : bullets) {
+			if (Physics.collide(newA.getShape(), bullet.getShape())) return;
+		}
+
+		addAsteroid(newA);
     }
 
 	public void addAsteroid(Asteroid a) {
@@ -733,8 +779,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		this.score = score;
 	}
 
-	public void setAsteroidSpawnRate(int delay) {
-		asteroidsTimer.setDelay(delay);
+	public void setAsteroidSpawnRate() {
+		asteroidsTimer.setDelay(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 500);
 	}
 
 	public void update(Graphics g) {
@@ -761,9 +807,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.requestFocusInWindow();
 			this.queryCollisions();
 			this.playerAction(keys);
-			this.setAsteroidSpawnRate(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 5);
+//			this.setAsteroidSpawnRate();
 		} else if (src == asteroidsTimer) {
-			// addAsteroid(); here
+			System.out.println("asteroid time");
+			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
 		}
 	}
 
