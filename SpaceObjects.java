@@ -386,15 +386,15 @@ class Ship {
 
 		isAccelerating = false;
 		if (keys[controls[this.ID][FORWARD]]) {  // moving forward
-			this.vx += this.accel * Math.cos(this.angle);
-			this.vy += this.accel * Math.sin(this.angle);
+			this.vx += this.accel * Math.cos(this.angle-1.57);
+			this.vy += this.accel * Math.sin(this.angle-1.57);
 			isAccelerating = true;
 		}
 		if (keys[controls[this.ID][RIGHT]]) {  // turning right
-			this.angle -= this.turnSpeed;
+			this.angle += this.turnSpeed;
 		}
 		if (keys[controls[this.ID][LEFT]]) {  // turning left
-			this.angle += this.turnSpeed;
+			this.angle -= this.turnSpeed;
 		}
 
 		// Slowing ship down by a factor gives ship a max speed
