@@ -94,7 +94,7 @@ class Asteroid {
 		this.makeShape();
 
 		// Adds the weight of the new asteroid to the whole weight
-		weight += (int) Math.pow(size, 3);
+		weight += (int) Math.pow(size, 3) + 1;
 	}
 
 	private void makeShape() {
@@ -257,7 +257,7 @@ class Asteroid {
 
 		this.exists = exists;
 		if (!exists) {
-			weight -= (int) Math.pow(this.size, 3);
+			weight -= (int) Math.pow(this.size, 3) + 1;
 		}
 	}
 
