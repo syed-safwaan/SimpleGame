@@ -30,7 +30,7 @@ class GameButton extends JButton {
 		this.pos = pos;
 		this.menuName = menuName;
 
-		// Add the actionlistener so it actually works
+		// Add the Actionlistener so it actually works
 		this.addActionListener(frame);
 
 		this.setSize(dimensions);
