@@ -417,12 +417,13 @@ class Ship {
 		/* Draws the Ship onto a given Graphics component. */
 		Graphics2D g2D = (Graphics2D)g;
 		AffineTransform saveXform = g2D.getTransform();
-
 		AffineTransform at = new AffineTransform();
 		at.rotate(this.angle,this.x + this.width/2,this.y+this.height/2);
 		g2D.transform(at);
-		g2D.drawImage(this.image, (int)x, (int)y, observer);
-
+		g2D.drawImage(this.image, (int)this.x, (int)this.y, observer);
+		if(this.isAccelerating){
+			g2D.drawImage(this.fireImage, (int)this.x+this.width, (int)this.y+this.height, observer);
+		}
 		g2D.setTransform(saveXform);
 
 	}
