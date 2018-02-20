@@ -111,7 +111,7 @@ class Asteroid {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.rotation + Math.acos(((xCoords[i] - centerX)/dist));
 			if(yCoords[i] - centerY < 0){
-				ang *= -1;
+				ang += 3.14;
 			}
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
@@ -317,7 +317,7 @@ class Ship {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.angle + Math.acos(((xCoords[i] - centerX)/dist));
 			if(yCoords[i] - centerY < 0){
-				ang *= -1;
+				ang += 3.14;
 			}
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
@@ -443,6 +443,8 @@ class Ship {
 			g2D.drawImage(this.fireImage, (int)this.x, (int)this.y+this.height, observer);
 		}
 		g2D.setTransform(saveXform);
+		g2D.setColor(Color.YELLOW);
+		g2D.fillPolygon(this.body);
 
 	}
 
