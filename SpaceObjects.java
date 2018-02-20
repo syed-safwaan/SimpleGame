@@ -838,7 +838,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		// Removes asteroids
 		for (int i = this.asteroids.size() - 1; i >= 0; i--) {
 			if (!asteroids.get(i).exists()) {
-				this.score += 100 * asteroids.get(i).getSize();
+				this.score += 100 + 100 * asteroids.get(i).getSize();
 				for (Asteroid asteroid : asteroids.get(i).shatter()) addAsteroid(asteroid);
 				asteroids.remove(i);
 			}
