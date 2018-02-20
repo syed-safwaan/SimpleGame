@@ -70,6 +70,7 @@ class Asteroid {
 		}
 	};
 	private Polygon body;
+	private Polygon bodya;
 	private boolean exists;
 
 	// Constructor //
@@ -109,10 +110,7 @@ class Asteroid {
 		double centerX = this.x + this.rectSize / 2, centerY = this.y + this.rectSize / 2;
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
-			double ang = this.rotation + Math.acos(((xCoords[i] - centerX)/dist));
-			if(yCoords[i] - centerY < 0){
-				ang += 3.14;
-			}
+			double ang = this.rotation + Math.atan2(yCoords[i] - centerY, xCoords[i] - centerX);
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
@@ -151,6 +149,7 @@ class Asteroid {
 
 		this.x += this.vx;
 		this.y += this.vy;
+		this.rotation += this.rotationVel;
 		this.makeShape();
 	}
 
@@ -315,10 +314,7 @@ class Ship {
 		double centerX = this.x + this.width / 2, centerY = this.y + this.height / 2;
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
-			double ang = this.angle + Math.acos(((xCoords[i] - centerX)/dist));
-			if(yCoords[i] - centerY < 0){
-				ang += 3.14;
-			}
+			double ang = this.angle + Math.atan2(yCoords[i] - centerY, xCoords[i] - centerX);
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
@@ -443,8 +439,6 @@ class Ship {
 			g2D.drawImage(this.fireImage, (int)this.x, (int)this.y+this.height, observer);
 		}
 		g2D.setTransform(saveXform);
-		g2D.setColor(Color.YELLOW);
-		g2D.fillPolygon(this.body);
 
 	}
 
@@ -671,7 +665,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		}
 
-		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, rng.nextInt(10));
+		newA = new Asteroid(2, aX, aY, aVX/10, aVY/10, Math.random()*(0.5-Math.random()));
 
 		for (Asteroid asteroid : asteroids) {
 			if (Physics.collide(newA.getShape(), asteroid.getShape())) return;
