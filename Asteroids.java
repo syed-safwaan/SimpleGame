@@ -26,7 +26,7 @@ public class Asteroids extends JFrame implements ActionListener {
 
 	// Fields //
 
-	private Timer timer;  // framerate
+	private Timer timer;  // for repetitively checking the status of the game
 	private Space space;  // for the actual game
 
 	// Panel layout for the program
@@ -103,12 +103,12 @@ public class Asteroids extends JFrame implements ActionListener {
 			"diff"
 		);
 
-		restartButton = new GameButton(this, new Dimension(140, 80), new Point(20, 20), "RESTART", "open");
-		restartButton.setVisible(false);
+		restartButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), "RESTART", "open");
 
 		space = new Space();
 		space.add(restartButton);
 
+		timer = new Timer(10, this);
 
 		// Setting up the panels for the game
 		main = new JPanel(cardLayout);
@@ -132,8 +132,11 @@ public class Asteroids extends JFrame implements ActionListener {
 
 		// Event source
 		Object src = e.getSource();
-
-		if (src == startButton) {
+		if (src == timer) {
+			if (space.hasGameEnded()) {
+				restartButton.setVisible(true);
+			}
+		} else if (src == startButton) {
 			cardLayout.show(main, modeMenu.getName());
 		} else if (src == instructButton) {
 			cardLayout.show(main, instructMenu.getName());
@@ -148,18 +151,27 @@ public class Asteroids extends JFrame implements ActionListener {
 			playerCount = 2;
 			cardLayout.show(main, diffMenu.getName());
 		} else if (src == easyDiffButton) {
+			restartButton.setVisible(false);
 			space.init(1, playerCount);
 			cardLayout.show(main, "space");
+			timer.start();
 		} else if (src == medDiffButton) {
+			restartButton.setVisible(false);
 			space.init(2, playerCount);
 			cardLayout.show(main, "space");
+			timer.start();
 		} else if (src == hardDiffButton) {
+			restartButton.setVisible(false);
 			space.init(3, playerCount);
 			cardLayout.show(main, "space");
+			timer.start();
 		} else if (src == modeBackButton || src == instructBackButton) {
 			cardLayout.show(main, startMenu.getName());
 		} else if (src == diffBackButton) {
 			cardLayout.show(main, modeMenu.getName());
+		} else if (src == restartButton) {
+			timer.stop();
+			cardLayout.show(main, startMenu.getName());
 		}
 	}
 }

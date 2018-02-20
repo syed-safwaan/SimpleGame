@@ -129,6 +129,13 @@ class Asteroid {
 		return weight;
 	}
 
+	public static void resetWeight() {
+
+		/* Resets weight back to 0. */
+
+		weight = 0;
+	}
+
 	public static int getMaxWeight() {
 
 		/* Returns the weight limit. */
@@ -627,6 +634,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		this.score = 0;
 		this.difficulty = difficulty;
+		Asteroid.resetWeight();
 		Asteroid.setMaxWeight(30 + 18 * (difficulty - 1));
 
 		this.asteroids.clear();
