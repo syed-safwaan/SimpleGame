@@ -835,6 +835,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		Object src = e.getSource();
 
 		if (src == timer) {
+			this.filterExistingObjects();
 			this.repaint();
 			this.requestFocusInWindow();
 			this.queryCollisions();
@@ -842,6 +843,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.moveBullets();
 			this.moveAsteroids();
 			this.setAsteroidSpawnRate();
+
 		} else if (src == asteroidsTimer) {
 			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
 		}
