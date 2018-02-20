@@ -70,7 +70,6 @@ class Asteroid {
 		}
 	};
 	private Polygon body;
-	private Polygon bodya;
 	private boolean exists;
 
 	// Constructor //
@@ -158,6 +157,9 @@ class Asteroid {
 		/* Reduces Asteroid health by a given amount. */
 
 		this.hp -= damage;
+		if(this.hp <= 0){
+		    this.exists = false;
+        }
 	}
 
 	public int getHp() {
