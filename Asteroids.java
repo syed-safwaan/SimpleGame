@@ -34,9 +34,9 @@ public class Asteroids extends JFrame implements ActionListener {
 	private CardLayout cardLayout = new CardLayout();
 
 	// All menus and buttons in use in the game
-	private Menu startMenu, optionsMenu, diffMenu, modeMenu;
-	private GameButton startButton, optionsButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton;
-	private GameButton modeBackButton, optionsBackButton, diffBackButton;
+	private Menu startMenu, instructMenu, diffMenu, modeMenu;
+	private GameButton startButton, instructButton, exitButton, storyButton, arcadeButton, arcadeMultButton, easyDiffButton, medDiffButton, hardDiffButton;
+	private GameButton modeBackButton, instructBackButton, diffBackButton;
 
 	// Main panel where everything is put on (uses the CardLayout)
 	JPanel main;
@@ -56,12 +56,12 @@ public class Asteroids extends JFrame implements ActionListener {
 		// Start Menu
 
 		startButton = new GameButton(this, new Dimension(338, 96), new Point(471, 250), "START", "modes");
-		optionsButton = new GameButton(this, new Dimension(338, 96), new Point(471, 400), "OPTIONS", "options");
+		instructButton = new GameButton(this, new Dimension(338, 96), new Point(471, 400), "MANUAL", "instruct");
 		exitButton = new GameButton(this, new Dimension(338, 96), new Point(471, 550), "EXIT", "close");
 
 		startMenu = new Menu(
 			new ImageIcon("Images\\Title_SHOOTY CIRCLES.png"),
-			new GameButton[]{startButton, optionsButton, exitButton},
+			new GameButton[]{startButton, instructButton, exitButton},
 			"open"
 		);
 
@@ -78,13 +78,13 @@ public class Asteroids extends JFrame implements ActionListener {
 			"modes"
 		);
 
-		// Options Menu
+		// instruct Menu
 
-		optionsBackButton = new GameButton(this, new Dimension(253, 120), new Point(950, 530), "BACK", "open");
+		instructBackButton = new GameButton(this, new Dimension(253, 120), new Point(950, 530), "BACK", "open");
 
-		optionsMenu = new Menu(
-			new GameButton[]{optionsBackButton},
-			"options"
+		instructMenu = new Menu(
+			new GameButton[]{instructBackButton},
+			"instruct"
 		);
 
 		// Difficulty Menu
@@ -105,7 +105,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		// Setting up the panels for the game
 		main = new JPanel(cardLayout);
 		main.add(startMenu, startMenu.getName());
-		main.add(optionsMenu, optionsMenu.getName());
+		main.add(instructMenu, instructMenu.getName());
 		main.add(modeMenu, modeMenu.getName());
 		main.add(diffMenu, diffMenu.getName());
 		main.add(space, "space");
@@ -127,8 +127,8 @@ public class Asteroids extends JFrame implements ActionListener {
 
 		if (src == startButton) {
 			cardLayout.show(main, modeMenu.getName());
-		} else if (src == optionsButton) {
-			cardLayout.show(main, optionsMenu.getName());
+		} else if (src == instructButton) {
+			cardLayout.show(main, instructMenu.getName());
 		} else if (src == exitButton) {
 			System.exit(0);
 		} else if (src == storyButton) {
@@ -148,7 +148,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		} else if (src == hardDiffButton) {
 			space.init(3);
 			cardLayout.show(main, "space");
-		} else if (src == modeBackButton || src == optionsBackButton) {
+		} else if (src == modeBackButton || src == instructBackButton) {
 			cardLayout.show(main, startMenu.getName());
 		} else if (src == diffBackButton) {
 			cardLayout.show(main, modeMenu.getName());

@@ -575,6 +575,8 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		// Set up the panel for keyboard input
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
 		this.addKeyListener(this);
+		this.setFocusable(true);
+		this.requestFocusInWindow();
 
 		// Use null LM
 		this.setLayout(null);
@@ -743,7 +745,6 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.repaint();
 			this.queryCollisions();
 			this.setAsteroidSpawnRate(50 * (Asteroid.getWeight()/Asteroid.getMaxWeight()) + 5);
-			System.out.println();
 		} else if (src == asteroidsTimer) {
 			// addAsteroid(); here
 		}
@@ -755,11 +756,13 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
+		System.out.println("ay pressed");
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		keys[e.getKeyCode()] = false;
+		System.out.println("ay released");
 	}
 
 	@Override
