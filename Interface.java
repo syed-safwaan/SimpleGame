@@ -42,9 +42,9 @@ class GameButton extends JButton {
 		this.setMargin(new Insets(0, 0, 0, 0));
 		this.setContentAreaFilled(false);
 
-		ImageIcon idleImg = new ImageIcon(String.format("Images\\Button_%s0.png", imgName));
-		ImageIcon hoverImg = new ImageIcon(String.format("Images\\Button_%s1.png", imgName));
-		ImageIcon pressedImg = new ImageIcon(String.format("Images\\Button_%s2.png", imgName));
+		ImageIcon idleImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s0.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon hoverImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s1.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon pressedImg = new ImageIcon(new ImageIcon(String.format("Images\\Button_%s2.png", imgName)).getImage().getScaledInstance((int) dimensions.getWidth(), (int) dimensions.getHeight(), Image.SCALE_DEFAULT));
 
 		this.setIcon(idleImg);
 		this.setRolloverIcon(hoverImg);

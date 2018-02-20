@@ -83,6 +83,7 @@ public class Asteroids extends JFrame implements ActionListener {
 		instructBackButton = new GameButton(this, new Dimension(253, 120), new Point(950, 530), "BACK", "open");
 
 		instructMenu = new Menu(
+			new ImageIcon("Images\\Text_Manual.png"),
 			new GameButton[]{instructBackButton},
 			"instruct"
 		);
