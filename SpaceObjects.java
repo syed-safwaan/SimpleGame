@@ -158,6 +158,9 @@ class Asteroid {
 		/* Reduces Asteroid health by a given amount. */
 
 		this.hp -= damage;
+		if(this.hp <= 0){
+			this.exists = false;
+		}
 	}
 
 	public int getHp() {
@@ -882,14 +885,15 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 
 		public static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
-			double newAvx = asteroidA.getVX() + asteroidB.getVX() * asteroidA.getSize() / asteroidB.getSize();
-			double newAvy = asteroidA.getVY() + asteroidB.getVY() * asteroidA.getSize() / asteroidB.getSize();
-			double newBvx = asteroidB.getVX() + asteroidA.getVX() * asteroidB.getSize() / asteroidA.getSize();
-			double newBvy = asteroidB.getVY() + asteroidA.getVY() * asteroidB.getSize() / asteroidA.getSize();
+			double newAvx = asteroidA.getVX() + asteroidB.getVX() * (1+asteroidA.getSize()) / (1+asteroidB.getSize());
+			double newAvy = asteroidA.getVY() + asteroidB.getVY() * (1+asteroidA.getSize()) / (1+asteroidB.getSize());
+			double newBvx = asteroidB.getVX() + asteroidA.getVX() * (1+asteroidB.getSize()) / (1+asteroidA.getSize());
+			double newBvy = asteroidB.getVY() + asteroidA.getVY() * (1+asteroidB.getSize()) / (1+asteroidA.getSize());
 			asteroidA.setVX(newAvx);
 			asteroidA.setVY(newAvy);
-			asteroidB.setVX(newBvx);
-			asteroidB.setVY(newBvy);
+			//asteroidB.setVX(newBvx);
+			//asteroidB.setVY(newBvy);
+
 		}
 
 		public static void colliding(Ship ship, Asteroid asteroid) {
