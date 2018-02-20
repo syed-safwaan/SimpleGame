@@ -55,8 +55,8 @@ class Asteroid {
 	private int[][][] polygonY = {
 		{
 			{0, 25, 30, 20},
-			{15, 30, 10, 0},
-			{15, 30, 0}
+			{30, 30, 0, 5},
+			{0, 30, 30}
 		},
 		{
 			{0, 0, 60, 80, 50},
@@ -70,7 +70,6 @@ class Asteroid {
 		}
 	};
 	private Polygon body;
-	private Polygon bodya;
 	private boolean exists;
 
 	// Constructor //
@@ -154,8 +153,10 @@ class Asteroid {
 
 		/* Moves asteroid depending on velocity. */
 
-		this.x += this.vx; this.x %= 1280;
-		this.y += this.vy; this.y %= 720;
+		this.vx += 0.1-Math.random()*0.2; this.vx *= 0.99;
+		this.vy += 0.1-Math.random()*0.2; this.vy *= 0.99;
+		this.x += this.vx; this.x = ((this.x + 1280 + 2*this.rectSize) % (1280 + this.rectSize)) - this.rectSize;
+		this.y += this.vy; this.y = ((this.y + 720 + 2*this.rectSize) % (720 + this.rectSize)) - this.rectSize;
 		this.rotation += this.rotationVel;
 		this.makeShape();
 	}
@@ -165,6 +166,9 @@ class Asteroid {
 		/* Reduces Asteroid health by a given amount. */
 
 		this.hp -= damage;
+		if(this.hp <= 0){
+		    this.exists = false;
+        }
 	}
 
 	public int getHp() {
@@ -251,9 +255,9 @@ class Asteroid {
 
 		if (size > 0) {
 			return new Asteroid[]{
-				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, rotation + Math.random() * 2 - 1),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, rotation + Math.random() * 2 - 1),
-				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, rotation + Math.random() * 2 - 1)
+				new Asteroid(this.size - 1, this.x, this.y, vx - 1, vy - 1, 0.2 - Math.random()*0.4),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 2, this.y, vx + 1, vy - 1, 0.2 - Math.random()*0.4),
+				new Asteroid(this.size - 1, this.x + this.rectSize / 3, this.y + this.rectSize / 2, vx + 1, vy + 1, 0.2 - Math.random()*0.4)
 			};
 		} else return new Asteroid[]{};  // asteroid is broken, no new ones to return
 	}
@@ -919,10 +923,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		}
 
 		private static void colliding(Asteroid asteroidA, Asteroid asteroidB) {
-			double newAvx = asteroidA.getVX() + asteroidB.getVX() * asteroidA.getSize() / asteroidB.getSize();
-			double newAvy = asteroidA.getVY() + asteroidB.getVY() * asteroidA.getSize() / asteroidB.getSize();
-			double newBvx = asteroidB.getVX() + asteroidA.getVX() * asteroidB.getSize() / asteroidA.getSize();
-			double newBvy = asteroidB.getVY() + asteroidA.getVY() * asteroidB.getSize() / asteroidA.getSize();
+			double newAvx = asteroidA.getVX() + 0.01 * (asteroidA.getX() - asteroidB.getX()) * (1 + asteroidB.getSize()) / (1 + asteroidA.getSize());
+			double newAvy = asteroidA.getVY() + 0.01 * (asteroidA.getY() - asteroidB.getY()) * (1 + asteroidB.getSize()) / (1 + asteroidA.getSize());
+			double newBvx = asteroidB.getVX() + 0.01 * (asteroidB.getX() - asteroidA.getX()) * (1 + asteroidA.getSize()) / (1 + asteroidB.getSize());
+			double newBvy = asteroidB.getVY() + 0.01 * (asteroidB.getY() - asteroidA.getY()) * (1 + asteroidA.getSize()) / (1 + asteroidB.getSize());
 			asteroidA.setVX(newAvx);
 			asteroidA.setVY(newAvy);
 			asteroidB.setVX(newBvx);
