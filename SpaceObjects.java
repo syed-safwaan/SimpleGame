@@ -110,6 +110,9 @@ class Asteroid {
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.rotation + Math.acos(((xCoords[i] - centerX)/dist));
+			if(yCoords[i] - centerY < 0){
+				ang *= -1;
+			}
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
@@ -313,6 +316,9 @@ class Ship {
 		for (int i = 0; i < pointCount; i++) {
 			double dist = Math.hypot(xCoords[i] - centerX, yCoords[i] - centerY);
 			double ang = this.angle + Math.acos(((xCoords[i] - centerX)/dist));
+			if(yCoords[i] - centerY < 0){
+				ang *= -1;
+			}
 			double newX = dist * (Math.cos(ang)) + centerX;
 			double newY = dist * (Math.sin(ang)) + centerY;
 			xCoords[i] = (int) newX;
