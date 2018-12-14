@@ -31,6 +31,7 @@ class Asteroid {
 	private double x, y, vx, vy, rotation, rotationVel;  // asteroid state of motion
 	private int size, rectSize, hp;
 	private int bodyType;
+	private Color bodyCol, lineCol;
 
 	// Polygon points
 	private int[][][] polygonX = {
@@ -91,6 +92,8 @@ class Asteroid {
 		this.hp = hpSizes[size];
 		this.exists = true;
 		this.bodyType = (new Random()).nextInt(3);
+		this.bodyCol = new Color(100, 100, 100, 100);
+		this.lineCol = new Color(200, 200, 200, 200);
 		this.makeShape();
 
 		// Adds the weight of the new asteroid to the whole weight
@@ -136,7 +139,7 @@ class Asteroid {
 		return weight;
 	}
 
-	public static void setWeight(int newWeight){
+	public static void setWeight(int newWeight) {
 
 		/* Changes weight value */
 
@@ -157,7 +160,7 @@ class Asteroid {
 		return maxWeight;
 	}
 
-	public int getRectSize(){
+	public int getRectSize() {
 
 		return this.rectSize;
 	}
@@ -173,14 +176,15 @@ class Asteroid {
 
 		/* Moves the Asteroid depending on velocity. */
 
-		this.vx += 0.1 - Math.random() * 0.2;
-		this.vx *= 0.98;
-		this.vy += 0.1 - Math.random() * 0.2;
-		this.vy *= 0.98;
-		if(this.vy > 2) this.vy = 2;
-		if(this.vy < -2) this.vy = -2;
-		if(this.vx > 2) this.vx = 2;
-		if(this.vx < -2) this.vx = -2;
+//		this.vx += 0.1 - Math.random() * 0.2;
+//		this.vx *= 0.98;
+//		this.vy += 0.1 - Math.random() * 0.2;
+//		this.vy *= 0.98;
+//		if(this.vy > 2) this.vy = 2;
+//		if(this.vy < -2) this.vy = -2;
+//		if(this.vx > 2) this.vx = 2;
+//		if(this.vx < -2) this.vx = -2;
+
 		this.x += this.vx;
 		this.x = ((this.x + 1280 + 2 * this.rectSize) % (1280 + this.rectSize)) - this.rectSize;
 		this.y += this.vy;
@@ -296,13 +300,13 @@ class Asteroid {
 
 		/* Draws the Asteroid onto a given Graphics component. */
 
-		g.setColor(Color.LIGHT_GRAY);
+		g.setColor(this.bodyCol);
 		g.fillPolygon(this.body);
-		g.setColor(Color.BLACK);
+		g.setColor(this.lineCol);
 		g.drawPolygon(this.body);
 		g.setFont(new Font("Monospaced", Font.BOLD, 15));
 		g.setColor(Color.WHITE);
-		g.drawString("" + this.hp, (int) this.x + this.rectSize / 2 , (int) this.y + this.rectSize / 2);
+		g.drawString("" + this.hp, (int) this.x + this.rectSize / 2, (int) this.y + this.rectSize / 2);
 	}
 }
 
@@ -321,17 +325,20 @@ class Ship {
 	};
 	// Name vars for direction
 	private static int FORWARD = 0, RIGHT = 1, BACK = 2, LEFT = 3, SHOOT = 4;
-	private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed;  // state of motion
+	private double x, y, vx = 0, vy = 0, angle, accel, drag, turnSpeed, flameDir;  // state of motion
 	private int ID;  // ID used for identification
 	private int shootingCooldown = 0;
 	private boolean isAccelerating;
-	private Polygon body;
+	private Polygon body, fireBody;
 	private int[] polygonX = {10, 20, 0};
 	private int[] polygonY = {0, 30, 30};
+	private int[] fireX = {10, 20, 0};
+	private int[] fireY = {50, 30, 30};
 	private final int width = 20, height = 30;
 	private Image fireImage = new ImageIcon("Images/Sprite_ShipFire.png").getImage().getScaledInstance(width, height * 3 / 5, Image.SCALE_DEFAULT);
 	private Image image;
 	private boolean exists;
+	private Color bodyCol, lineCol, fireCol;
 
 	public Ship(double x, double y, double accel, double drag, double turnSpeed) {
 
@@ -345,6 +352,11 @@ class Ship {
 		this.turnSpeed = turnSpeed;
 		this.exists = true;
 		this.image = new ImageIcon(String.format("Images/Sprite_ShipSimple%d.png", this.ID + 1)).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		Color[] colors = {new Color(0, 255, 0, 100), new Color(0, 0, 255, 100)};
+		this.bodyCol = colors[ID];
+		this.lineCol = new Color(200, 200, 200, 200);
+		this.fireCol = new Color(255, 0, 0, 200);
+		this.flameDir = 1;
 		this.makeShape();
 	}
 
@@ -381,8 +393,30 @@ class Ship {
 			xCoords[i] = (int) newX;
 			yCoords[i] = (int) newY;
 		}
+
+		int[] fxCoords = new int[pointCount];
+		int[] fyCoords = new int[pointCount];
+
+		// Makes original polygon without rotation
+		for (int i = 0; i < pointCount; i++) {
+			fxCoords[i] = (int) (this.x + fireX[i]);
+			fyCoords[i] = (int) (this.y + fireY[i]);
+		}
+
+		// Uses winding function to rotate all points from original polygon
+		double fcenterX = this.x + this.width / 2, fcenterY = this.y + this.height / 2;
+		for (int i = 0; i < pointCount; i++) {
+			double dist = Math.hypot(fxCoords[i] - fcenterX, fyCoords[i] - fcenterY);
+			double ang = this.angle + Math.atan2(fyCoords[i] - fcenterY, fxCoords[i] - fcenterX);
+			double newX = dist * (Math.cos(ang)) + fcenterX;
+			double newY = dist * (Math.sin(ang)) + fcenterY;
+			// Reassigns new points
+			fxCoords[i] = (int) newX;
+			fyCoords[i] = (int) newY;
+		}
 		// Reassigns body
 		this.body = new Polygon(xCoords, yCoords, pointCount);
+		this.fireBody = new Polygon(fxCoords, fyCoords, pointCount);
 
 	}
 
@@ -462,6 +496,9 @@ class Ship {
 			this.vx += this.accel * Math.cos(this.angle - 1.57);
 			this.vy += this.accel * Math.sin(this.angle - 1.57);
 			isAccelerating = true;
+
+			if (this.fireY[0] == 70 || this.fireY[0] == 40) this.flameDir *= -1;
+			this.fireY[0] += this.flameDir;
 		}
 		if (keys[controls[this.ID][RIGHT]]) {  // turning right
 			this.angle += this.turnSpeed;
@@ -494,18 +531,29 @@ class Ship {
 		/* Draws the Ship onto a given Graphics component. */
 
 		// Using AffineTransform to rotate images
-		Graphics2D g2D = (Graphics2D) g;
-		AffineTransform saveXform = g2D.getTransform();
-		AffineTransform at = new AffineTransform();
-		at.rotate(this.angle, this.x + this.width / 2, this.y + this.height / 2);
-		g2D.transform(at);
+//		Graphics2D g2D = (Graphics2D) g;
+//		AffineTransform saveXform = g2D.getTransform();
+//		AffineTransform at = new AffineTransform();
+//		at.rotate(this.angle, this.x + this.width / 2, this.y + this.height / 2);
+//		g2D.transform(at);
+//
+//		g2D.drawImage(this.image, (int) this.x, (int) this.y, observer);
+//		if (this.isAccelerating) {
+//			g2D.drawImage(this.fireImage, (int) this.x, (int) this.y + this.height, observer);
+//		}
+//		g2D.setTransform(saveXform);
 
-		g2D.drawImage(this.image, (int) this.x, (int) this.y, observer);
-		if (this.isAccelerating) {
-			g2D.drawImage(this.fireImage, (int) this.x, (int) this.y + this.height, observer);
+		g.setColor(this.bodyCol);
+		g.fillPolygon(this.body);
+		g.setColor(this.lineCol);
+		g.drawPolygon(this.body);
+
+		if (isAccelerating) {
+			g.setColor(this.fireCol);
+			g.fillPolygon(this.fireBody);
+			g.setColor(this.lineCol);
+			g.drawPolygon(this.fireBody);
 		}
-		g2D.setTransform(saveXform);
-
 	}
 
 
@@ -520,6 +568,7 @@ class Ship {
 		private Polygon hitbox;
 		private int radius = 3;
 		private int damage, durability;
+		private Color bodyCol, lineCol;
 
 		// Constructor //
 
@@ -534,6 +583,8 @@ class Ship {
 			this.exists = true;
 			this.damage = damage;
 			this.durability = 2;
+			this.bodyCol = new Color(255, 0, 0, 100);
+			this.lineCol = new Color(200, 200, 200, 200);
 			this.makeShape();
 		}
 
@@ -627,11 +678,39 @@ class Ship {
 
 			/* Draws The Bullet onto a Graphics component.*/
 
-			g.setColor(Color.BLACK);
+			g.setColor(this.bodyCol);
 			g.drawOval((int) this.x, (int) this.y, this.radius * 2, this.radius * 2);
-			g.setColor(Color.WHITE);
+			g.setColor(this.lineCol);
 			g.fillOval((int) this.x, (int) this.y, this.radius * 2, this.radius * 2);
 		}
+	}
+}
+
+class Star {
+	private int x, y, startRadius, startTwinkle, pulseDir, twinkleDir;
+	private double radius;
+	private Color bodyCol;
+
+	public Star(int x, int y, int radius) {
+		this.x = x;
+		this.y = y;
+		this.radius = startRadius = radius;
+		this.startTwinkle = (new Random()).nextInt(150) + 50;
+		this.bodyCol = new Color(200, 200, 200, startTwinkle);
+		this.pulseDir = twinkleDir = 1;
+	}
+
+	public void pulse() {
+		if ((int) this.radius == startRadius + 3 || (int) this.radius == 2) this.pulseDir *= -1;
+		this.radius += this.pulseDir * 0.05;
+
+		if (this.bodyCol.getAlpha() == startTwinkle + 50 || this.bodyCol.getAlpha() == startTwinkle - 50) this.twinkleDir *= -1;
+		this.bodyCol = new Color(bodyCol.getRed(), bodyCol.getGreen(), bodyCol.getBlue(), bodyCol.getAlpha() + twinkleDir);
+	}
+
+	public void update(Graphics g) {
+		g.setColor(this.bodyCol);
+		g.fillOval(this.x - (int) this.radius, this.y - (int) this.radius, (int) this.radius * 2, (int) this.radius * 2);
 	}
 }
 
@@ -646,6 +725,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 	private ArrayList<Asteroid> asteroids = new ArrayList<>();
 	private ArrayList<Ship.Bullet> bullets = new ArrayList<>();
 	private ArrayList<Space.Wall> walls = new ArrayList<>();
+	private ArrayList<Star> stars = new ArrayList<>();
 
 	// Game score
 	private int score;
@@ -699,6 +779,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		walls.add(new Wall(1270, 0, 30, 720));
 		walls.add(new Wall(0, -20, 1280, 30));
 		walls.add(new Wall(0, 710, 1280, 30));
+
+		for (int i = 0; i < 100; i++) {
+			stars.add(new Star(rng.nextInt(1280), rng.nextInt(720), rng.nextInt(3) + 3));
+		}
 
 		// Start timers
 		timer = new Timer(10, this);
@@ -786,14 +870,14 @@ class Space extends JPanel implements ActionListener, KeyListener {
 
 		/* Checking for collisions between pairs of objects. */
 
-		// Asteroids colliding
-		for (int i = 0; i < asteroids.size(); i++) {
-			for (int j = 0; j < i; j++) {
-				if (Physics.collide(asteroids.get(i).getShape(), asteroids.get(j).getShape())) {
-					Physics.colliding(asteroids.get(i), asteroids.get(j));
-				}
-			}
-		}
+//		// Asteroids colliding
+//		for (int i = 0; i < asteroids.size(); i++) {
+//			for (int j = 0; j < i; j++) {
+//				if (Physics.collide(asteroids.get(i).getShape(), asteroids.get(j).getShape())) {
+//					Physics.colliding(asteroids.get(i), asteroids.get(j));
+//				}
+//			}
+//		}
 
 		// Asteroids with ship
 		for (Asteroid asteroid : asteroids) {
@@ -852,6 +936,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		for (Asteroid asteroid : asteroids) asteroid.move();
 	}
 
+	private void moveStars() {
+		for (Star star : stars) star.pulse();
+	}
+
 	private void filterExistingObjects() {
 
 		/* Removes nonexistent entities. */
@@ -901,6 +989,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		for (Ship ship : ships) ship.update(g, this);
 		for (Asteroid asteroid : asteroids) asteroid.update(g);
 		for (Ship.Bullet bullet : bullets) bullet.update(g);
+		for (Star star : stars) star.update(g);
 
 		// Displays score in the top left of the screen
 		g.setColor(Color.white);
@@ -923,6 +1012,7 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			this.playerAction(keys);
 			this.moveBullets();
 			this.moveAsteroids();
+			this.moveStars();
 			this.setAsteroidSpawnRate();
 		} else if (src == asteroidsTimer) {  // asteroid spawn timer
 			if (Asteroid.getWeight() < Asteroid.getMaxWeight()) spawnAsteroid();
@@ -963,7 +1053,9 @@ class Space extends JPanel implements ActionListener, KeyListener {
 		super.paintComponent(g);
 
 		// Draw the background image and the Space
-		g.drawImage(this.background, 0, 0, this);
+//		g.drawImage(this.background, 0, 0, this);
+		g.setColor(Color.black);
+		g.fillRect(0, 0, 1280, 720);
 		Space.this.update(g);
 	}
 
@@ -987,10 +1079,10 @@ class Space extends JPanel implements ActionListener, KeyListener {
 			/* Handles collision between two Asteroids. */
 
 			// Generates new velocities for the two, depending on their current velocities and their distances
-			double newAvx = a.getVX() + 0.01 * (a.getX() + a.getRectSize()/2 - b.getX() - b.getRectSize()/2) * (1 + b.getSize()) / (1 + a.getSize());
-			double newAvy = a.getVY() + 0.01 * (a.getY() + a.getRectSize()/2 - b.getY() - b.getRectSize()/2) * (1 + b.getSize()) / (1 + a.getSize());
-			double newBvx = b.getVX() + 0.01 * (b.getX() + b.getRectSize()/2 - a.getX() - a.getRectSize()/2) * (1 + a.getSize()) / (1 + b.getSize());
-			double newBvy = b.getVY() + 0.01 * (b.getY() + b.getRectSize()/2 - a.getY() - a.getRectSize()/2) * (1 + a.getSize()) / (1 + b.getSize());
+			double newAvx = a.getVX() + 0.01 * (a.getX() + a.getRectSize() / 2 - b.getX() - b.getRectSize() / 2) * (1 + b.getSize()) / (1 + a.getSize());
+			double newAvy = a.getVY() + 0.01 * (a.getY() + a.getRectSize() / 2 - b.getY() - b.getRectSize() / 2) * (1 + b.getSize()) / (1 + a.getSize());
+			double newBvx = b.getVX() + 0.01 * (b.getX() + b.getRectSize() / 2 - a.getX() - a.getRectSize() / 2) * (1 + a.getSize()) / (1 + b.getSize());
+			double newBvy = b.getVY() + 0.01 * (b.getY() + b.getRectSize() / 2 - a.getY() - a.getRectSize() / 2) * (1 + a.getSize()) / (1 + b.getSize());
 
 			// Sets the velocities
 			a.setVX(newAvx);
